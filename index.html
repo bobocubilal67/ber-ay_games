@@ -66,9 +66,9 @@
         <button class="btn-char" onclick="startGame('Beril')">⚡ Beril (9 Yaş) - Süper Hız (Pasif)</button>
         <button class="btn-char" onclick="startGame('Aybars')">🦘 Aybars (2 Yaş) - Mega Zıplama (Pasif)</button>
         <button class="btn-char" onclick="startGame('Neriman')">❄️ Neriman (9 Yaş) - Canavarları Dondur</button>
-        <button class="btn-char" onclick="startGame('Meryem')">🛡️ Meryem (9 Yaş) - Koruma Kalkanı (15sn)</button>
+        <button class="btn-char" onclick="startGame('Meryem')">🛡️ Meryem (9 Yaş) - Havada 2 Kez Zıplama (Sürekli)</button>
         <button class="btn-char" onclick="startGame('Masal')">🎈 Masal (5 Yaş) - Süzülerek Uçma</button>
-        <button class="btn-char" onclick="startGame('Bartu')">💥 Bartu (9 Yaş) - Canavar İteleme (15sn)</button>
+        <button class="btn-char" onclick="startGame('Bartu')">💥 Bartu (9 Yaş) - Canavar İteleme (5 Hak)</button>
         <div style="margin-top:25px; font-size:13px; color:#ccc; font-weight: bold;">Bilal Yıldırım tarafından yapılmıştır.</div>
     </div>
 
@@ -99,18 +99,22 @@
         let secilenKarakter = ""; let moveDir = 0; let gameInstance = null;
         let playerLives = 1; let isInvulnerable = false; let isAbilityActive = false;
         let abilityTimerEvent = null; let bossActive = false; let bossTimer = 30; let bossTimerEvent = null;
+        
+        // Yeni Mekanik Değişkenleri
+        let meryemJumpCount = 0;
+        let bartuPushCount = 0;
 
         function startGame(karakterIsmi) {
             secilenKarakter = karakterIsmi; playerLives = 1; isInvulnerable = false; isAbilityActive = false;
-            bossActive = false; bossTimer = 30;
-            moveDir = 0;
+            bossActive = false; bossTimer = 30; moveDir = 0; meryemJumpCount = 0; bartuPushCount = 0;
             
             document.getElementById('char-selection').style.display = 'none';
             document.getElementById('game-wrapper').style.display = 'block';
             document.getElementById('game-over-screen').style.display = 'none';
             
             const abBtn = document.getElementById('btnAbility');
-            if(secilenKarakter !== "Beril" && secilenKarakter !== "Aybars") {
+            // Meryem'in gücü pasif çift zıplama olduğu için artık ona da yıldız butonunu göstermiyoruz
+            if(secilenKarakter !== "Beril" && secilenKarakter !== "Aybars" && secilenKarakter !== "Meryem") {
                 abBtn.style.display = "flex"; abBtn.style.opacity = "1";
             } else { abBtn.style.display = "none"; }
 
@@ -139,7 +143,23 @@
         }
 
         function makePlayerJump() {
-            if (player && player.body && player.body.touching.down) {
+            if (!player || !player.body) return;
+
+            // MERYEM ÇİFT ZIPLAMA MEKANİĞİ (Süre sınırı yok, kalıcı)
+            if (secilenKarakter === "Meryem") {
+                if (player.body.touching.down) {
+                    meryemJumpCount = 1;
+                    player.body.setVelocityY(-380);
+                } else if (meryemJumpCount < 2) {
+                    meryemJumpCount = 2;
+                    player.body.setVelocityY(-360); // Havada ikinci zıplama
+                    gameInstance.scene.scenes[0].showFloatingText("ÇİFT ZIPLAMA! 🛡️", 0x3498db);
+                }
+                return;
+            }
+
+            // Diğer Karakterlerin Zıplama Standartları
+            if (player.body.touching.down) {
                 let gravityFactor = (isAbilityActive && secilenKarakter === "Masal") ? -220 : -380;
                 let ziplamaGucu = (secilenKarakter === "Aybars") ? -580 : gravityFactor;
                 player.body.setVelocityY(ziplamaGucu);
@@ -147,31 +167,35 @@
         }
 
         function triggerSpecialAbility() {
+            let activeScene = gameInstance.scene.scenes[0];
+
+            // BARTU İTELEME GÜCÜ YÜKLEME (5 Hak Verir)
+            if (secilenKarakter === "Bartu") {
+                isAbilityActive = true;
+                bartuPushCount = 5; // 5 canavar hakkı tanındı
+                player.setTint(0xe67e22); 
+                activeScene.showFloatingText("İTELEME GÜCÜ YÜKLENDİ (5 HAK)!", 0xe67e22);
+                document.getElementById('btnAbility').style.opacity = "0.4";
+                return;
+            }
+
             if (isAbilityActive) return;
             isAbilityActive = true;
             document.getElementById('btnAbility').style.opacity = "0.4";
-
-            let activeScene = gameInstance.scene.scenes[0];
             activeScene.showFloatingText("ÖZEL GÜÇ AKTİF!", 0xf1c40f);
 
             if (secilenKarakter === "Neriman") {
                 monsters.children.iterate((m) => { if(m && m.body) m.body.setVelocityX(0); });
-            } else if (secilenKarakter === "Meryem") {
-                player.setTint(0x3498db); 
             } else if (secilenKarakter === "Masal") {
                 activeScene.physics.world.gravity.y = 250; 
-            } else if (secilenKarakter === "Bartu") {
-                player.setTint(0xe67e22); 
             }
 
-            // ⏰ 15 SANİYE SINIRI SÜRESİ (KESİN ÇÖZÜM)
+            // Neriman ve Masal için eski 15sn kuralı kalabilir veya isterseniz değiştirilebilir.
             abilityTimerEvent = activeScene.time.delayedCall(15000, () => {
                 isAbilityActive = false;
                 document.getElementById('btnAbility').style.opacity = "1";
                 activeScene.physics.world.gravity.y = 800; 
-                if(player && player.clearTint) player.clearTint();
                 activeScene.showFloatingText("Özel Güç Bitti", 0xffffff);
-                
                 if(secilenKarakter === "Neriman" && monsters) {
                     monsters.children.iterate((m) => { if(m && m.body) m.body.setVelocityX(-70); });
                 }
@@ -240,15 +264,21 @@
             this.physics.add.overlap(player, monsters, (p, monster) => {
                 if (isInvulnerable) return;
                 
-                // Meryem Kalkan Kontrolü (Sadece 15 saniye aktifken korur)
-                if (isAbilityActive && secilenKarakter === "Meryem") return;
-                
-                // Bartu İteleme Gücü Kontrolü (Sadece 15 saniye aktifken iteler)
-                if (isAbilityActive && secilenKarakter === "Bartu") {
-                    let yon = (monster.x > player.x) ? 380 : -380;
+                // BARTU KONTROLÜ (Sadece 5 iteleme hakkı varken korur ve iter)
+                if (isAbilityActive && secilenKarakter === "Bartu" && bartuPushCount > 0) {
+                    let yon = (monster.x > player.x) ? 400 : -400;
                     monster.body.setVelocityX(yon);
-                    monster.body.setVelocityY(-220);
-                    self.showFloatingText("İTELENDİ! 💥", 0xe67e22);
+                    monster.body.setVelocityY(-200);
+                    
+                    bartuPushCount--; // Bir hak düştü
+                    self.showFloatingText(`İTELENDİ! Kalan Hak: ${bartuPushCount}`, 0xe67e22);
+                    
+                    if (bartuPushCount <= 0) {
+                        isAbilityActive = false;
+                        if(player.clearTint) player.clearTint();
+                        document.getElementById('btnAbility').style.opacity = "1";
+                        self.showFloatingText("İteleme Enerjisi Bitti!", 0xffffff);
+                    }
                     return;
                 }
 
@@ -262,8 +292,8 @@
             infoText = this.add.text(15, 15, 'Kahraman: ' + secilenKarakter, { fontSize: '15px', color: '#fff', fontWeight: 'bold' }).setScrollFactor(0).setDepth(100);
             livesText = this.add.text(15, 40, '❤️ Canlar: ❤️', { fontSize: '15px', color: '#e74c3c', fontWeight: 'bold' }).setScrollFactor(0).setDepth(100);
             
-            // 🕒 SAAT GÖSTERGESİ ÖN PLANA ALINDI (setDepth ve setScrollFactor eklendi)
-            bossText = this.add.text(400, 30, '', { fontSize: '20px', color: '#f1c40f', fontWeight: 'bold', backgroundColor: '#000000', padding: 5 }).setOrigin(0.5).setScrollFactor(0).setDepth(100);
+            // Kamera takip koordinatları yüzünden yazının kaybolmaması için sabit konumu garantiye aldık
+            bossText = this.add.text(400, 40, '', { fontSize: '20px', color: '#f1c40f', fontWeight: 'bold', backgroundColor: '#000000', padding: 5 }).setOrigin(0.5).setScrollFactor(0).setDepth(101);
 
             this.showFloatingText = function(text, color) {
                 let txt = self.add.text(player.x - 40, player.y - 50, text, { fontSize: '14px', color: Phaser.Display.Color.IntegerToColor(color).rgba, fontWeight:'bold' }).setDepth(99);
@@ -299,6 +329,7 @@
                 player.body.setVelocityX(moveDir * hizAyari);
             }
 
+            // Boss Odası Tetiklenmesi
             if (player.x > 2500 && !bossActive) {
                 bossActive = true;
                 let scene = player.scene;
@@ -311,7 +342,7 @@
                 boss.body.setCollideWorldBounds(false).setAllowGravity(false);
                 
                 scene.physics.add.overlap(player, boss, () => {
-                    if(!isInvulnerable && !(isAbilityActive && secilenKarakter === "Meryem")) {
+                    if(!isInvulnerable) {
                         gameOver(scene, "Bölüm sonu canavarına elendin!");
                     }
                 });
@@ -326,7 +357,7 @@
                     }
                 });
 
-                // Geri sayım başlatılıyor ve yazı ekrana yazdırılıyor
+                // Geri sayım saati ekranın en üstünde sabitleniyor
                 bossText.setText('BOSS SAVAŞI! KALAN SÜRE: ' + bossTimer + 'sn');
                 bossTimerEvent = scene.time.addEvent({
                     delay: 1000, loop: true,
