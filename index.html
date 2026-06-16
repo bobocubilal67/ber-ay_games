@@ -30,21 +30,26 @@
             max-width: 500px;
             width: 90%;
         }
+        
+        /* 🎨 Belirginleştirilmiş ve Siyah Yazılı Karakter Butonları */
         .btn-char {
-            background: linear-gradient(135px, #3498db, #2980b9);
-            color: white;
-            border: none;
+            background: #ffffff; /* Tam beyaz arka plan */
+            color: #000000;      /* Net siyah yazı rengi */
+            border: 3px solid #3498db; /* Belirgin mavi çerçeve */
             padding: 15px 20px;
-            margin: 8px 0;
+            margin: 10px 0;
             font-size: 16px;
-            font-weight: bold;
+            font-weight: bold;   /* Kalın yazı */
             cursor: pointer;
             border-radius: 12px;
             width: 100%;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.4);
             transition: 0.2s;
         }
-        .btn-char:active { transform: scale(0.98); }
+        .btn-char:active { 
+            transform: scale(0.98); 
+            background: #e0e0e0;
+        }
         
         #game-wrapper {
             display: none;
@@ -99,7 +104,7 @@
         .ability-btn:active { box-shadow: 0 2px 0 #f39c12; }
 
         .signature-top {
-            font-size: 14px;
+            font-size: 16px;
             color: #f1c40f;
             margin-bottom: 15px;
             font-weight: bold;
@@ -153,14 +158,14 @@
     <!-- Karakter Seçim Ekranı -->
     <div id="char-selection">
         <div class="signature-top">Designed by DtBY</div>
-        <h2 style="margin-bottom: 25px;">Süper Kahramanını Seç!</h2>
+        <h2 style="margin-bottom: 25px; font-size: 24px;">Süper Kahramanını Seç!</h2>
         <button class="btn-char" onclick="startGame('Beril')">⚡ Beril (9 Yaş) - Süper Hız (Pasif)</button>
         <button class="btn-char" onclick="startGame('Aybars')">🦘 Aybars (2 Yaş) - Mega Zıplama (Pasif)</button>
         <button class="btn-char" onclick="startGame('Neriman')">❄️ Neriman (9 Yaş) - Canavarları Dondur</button>
         <button class="btn-char" onclick="startGame('Meryem')">🛡️ Meryem (9 Yaş) - Koruma Kalkanı</button>
         <button class="btn-char" onclick="startGame('Masal')">🎈 Masal (5 Yaş) - Süzülerek Uçma</button>
         <button class="btn-char" onclick="startGame('Bartu')">💥 Bartu (9 Yaş) - Güç Dalgası (Yok Et)</button>
-        <div style="margin-top:20px; font-size:12px; color:#aaa;">Bilal Yıldırım tarafından yapılmıştır.</div>
+        <div style="margin-top:25px; font-size:13px; color:#ccc; font-weight: bold;">Bilal Yıldırım tarafından yapılmıştır.</div>
     </div>
 
     <!-- Oyun Alanı -->
@@ -195,14 +200,14 @@
         let secilenKarakter = "";
         let moveDir = 0; 
         let gameInstance = null;
-        let playerLives = 1; // Başlangıç canı
-        let isInvulnerable = false; // Hasar aldıktan sonra yanıp sönme durumu
+        let playerLives = 1; 
+        let isInvulnerable = false; 
         let isAbilityActive = false;
         let abilityTimerEvent = null;
 
         function startGame(karakterIsmi) {
             secilenKarakter = karakterIsmi;
-            playerLives = 1; // Her oyun başında 1 can ile başlar, maksimum 3 olur
+            playerLives = 1; 
             isInvulnerable = false;
             isAbilityActive = false;
             
@@ -210,10 +215,10 @@
             document.getElementById('game-wrapper').style.display = 'block';
             document.getElementById('game-over-screen').style.display = 'none';
             
-            // Özel güç butonu kontrolü (Beril ve Aybars hariç göster)
             const abBtn = document.getElementById('btnAbility');
             if(secilenKarakter !== "Beril" && secilenKarakter !== "Aybars") {
                 abBtn.style.display = "flex";
+                abBtn.style.opacity = "1";
             } else {
                 abBtn.style.display = "none";
             }
@@ -256,46 +261,40 @@
 
         function makePlayerJump() {
             if (player && player.body && player.body.touching.down) {
-                let gravityFactor = isAbilityActive && secilenKarakter === "Masal" ? -180 : -320;
+                let gravityFactor = (isAbilityActive && secilenKarakter === "Masal") ? -180 : -320;
                 let ziplamaGucu = (secilenKarakter === "Aybars") ? -550 : gravityFactor;
                 player.body.setVelocityY(ziplamaGucu);
             }
         }
 
-        // 🌟 ÖZEL GÜCÜ TETİKLEME (15 SANİYE)
         function triggerSpecialAbility() {
-            if (isAbilityActive) return; // Zaten aktifse tekrar basılamasın
+            if (isAbilityActive) return; 
             isAbilityActive = true;
-            document.getElementById('btnAbility').style.opacity = "0.4"; // Butonu soluklaştır (bekleme modu)
+            document.getElementById('btnAbility').style.opacity = "0.4"; 
 
             let activeScene = gameInstance.scene.scenes[0];
             activeScene.showFloatingText("ÖZEL GÜÇ AKTİF!", 0xf1c40f);
 
-            // Karakterlere göre özel güç lojikleri
             if (secilenKarakter === "Neriman") {
-                // Canavarları durdur
-                monsters.children.iterate((m) => { m.body.setVelocityX(0); });
+                monsters.children.iterate((m) => { if(m && m.body) m.body.setVelocityX(0); });
             } else if (secilenKarakter === "Meryem") {
-                player.setTint(0x3498db); // Mavi kalkan rengi
+                player.setTint(0x3498db); 
             } else if (secilenKarakter === "Masal") {
-                activeScene.physics.world.gravity.y = 200; // Hafif yerçekimi
+                activeScene.physics.world.gravity.y = 200; 
             } else if (secilenKarakter === "Bartu") {
-                // Ekrandaki canavarları yok et
                 monsters.clear(true, true);
                 activeScene.showFloatingText("CANAVARLAR YOK EDİLDİ!", 0xe74c3c);
             }
 
-            // 15 Saniye sonra gücü kapatma zamanlayıcısı
             abilityTimerEvent = activeScene.time.delayedCall(15000, () => {
                 isAbilityActive = false;
                 document.getElementById('btnAbility').style.opacity = "1";
-                activeScene.physics.world.gravity.y = 700; // Yerçekimini sıfırla
-                player.clearTint();
-                activeScene.showFloatingText("Özel Güç Bitti", #ffffff);
+                activeScene.physics.world.gravity.y = 700; 
+                if(player && player.clearTint) player.clearTint();
+                activeScene.showFloatingText("Özel Güç Bitti", 0xffffff); // Hata düzelten tırnak ve renk düzeltmesi
                 
-                // Neriman'ın canavarları donmuşsa yeniden yürüt
-                if(secilenKarakter === "Neriman") {
-                    monsters.children.iterate((m) => { m.body.setVelocityX(-60); });
+                if(secilenKarakter === "Neriman" && monsters) {
+                    monsters.children.iterate((m) => { if(m && m.body) m.body.setVelocityX(-60); });
                 }
             }, [], activeScene);
         }
@@ -309,7 +308,7 @@
         };
 
         let player; let platforms; let monsters; let hearts;
-        let infoText; let livesText; let abilityText;
+        let infoText; let livesText;
 
         function create() {
             let self = this;
@@ -329,31 +328,26 @@
             spawnMonster(this, 600, 260);
             spawnMonster(this, 200, 180);
 
-            // ❤️ RASTGELE YERDE KALP (CAN) OLUŞTURMA GRUBU
             hearts = this.physics.add.group();
             this.time.addEvent({
-                delay: Phaser.Math.Between(5000, 12000), // 5-12 saniyede bir dener
+                delay: Phaser.Math.Between(5000, 12000), 
                 callback: () => {
-                    if (hearts.getLength() < 1 && playerLives < 3) {
-                        // Rastgele üst platform koordinatları seçilir
+                    if (hearts.getLength() < 1 && playerLives < 3 && !self.physics.world.isPaused) {
                         let xPos = Phaser.Math.Between(100, 700);
                         let yPos = Phaser.Math.Between(150, 350);
                         
-                        // Kırmızı bir kalp (Daire olarak simüle edildi)
                         let heart = self.add.circle(xPos, yPos, 12, 0xe74c3c);
                         hearts.add(heart);
                         self.physics.add.existing(heart);
-                        heart.body.setAllowGravity(false); // Havada asılı dursun
+                        heart.body.setAllowGravity(false); 
                     }
                 },
                 loop: true
             });
 
-            // Fizik Çarpışmaları
             this.physics.add.collider(player, platforms);
             this.physics.add.collider(monsters, platforms);
             
-            // Kalp Toplama Mantığı
             this.physics.add.overlap(player, hearts, (p, heart) => {
                 if (playerLives < 3) {
                     playerLives++;
@@ -363,32 +357,27 @@
                 }
             }, null, this);
 
-            // Canavara Çarpma Mantığı
             this.physics.add.overlap(player, monsters, () => {
-                if (isInvulnerable) return; // Yanıp sönüyorsa hasar alma
-                if (isAbilityActive && secilenKarakter === "Meryem") return; // Meryem'in kalkanı varsa koru
+                if (isInvulnerable) return; 
+                if (isAbilityActive && secilenKarakter === "Meryem") return; 
 
                 if (playerLives > 1) {
-                    // Kalbi varsa harca, koruma moduna geç ve yanıp sön
                     playerLives--;
                     livesText.setText('❤️ Canlar: ' + '❤️'.repeat(playerLives));
                     triggerInvulnerability(self);
                 } else {
-                    // Kalbi yoksa oyun biter
                     self.physics.pause();
                     moveDir = 0;
                     document.getElementById('game-over-screen').style.display = 'block';
                 }
             }, null, this);
 
-            // Ekran Metinleri
             infoText = this.add.text(15, 15, 'Süper Kahraman: ' + secilenKarakter, { fontSize: '15px', color: '#fff', fontWeight: 'bold' });
             livesText = this.add.text(15, 40, '❤️ Canlar: ❤️', { fontSize: '15px', color: '#e74c3c', fontWeight: 'bold' });
             
-            // Yardımcı Fonksiyon: Ekranda yazı uçurma
             this.showFloatingText = function(text, color) {
                 let txt = self.add.text(player.x - 40, player.y - 50, text, { fontSize: '14px', color: Phaser.Display.Color.IntegerToColor(color).rgba, fontWeight:'bold' });
-                self.tweens.add({ targets: txt, y: txt.y - 50, alpha: 0, duration: 1500, onComplete: () => txt.destroy() });
+                self.tweens.add({ targets: txt, y: txt.y - 50, alpha: 0, duration: 1500, onComplete: () => { if(txt) txt.destroy(); } });
             };
         }
 
@@ -400,20 +389,18 @@
             monster.body.setVelocityX(-60);
         }
 
-        // 🛡️ YANIP SÖNME VE HASAR KORUMASI
         function triggerInvulnerability(scene) {
             isInvulnerable = true;
             scene.showFloatingText("1 CAN GİTTİ! KORUMA AKTİF", 0xf39c12);
 
-            // Yanıp sönme efekti (Tween)
             scene.tweens.add({
                 targets: player,
                 alpha: 0.2,
                 duration: 150,
                 yoyo: true,
-                repeat: 8, // Yaklaşık 2.5 saniye sürer
+                repeat: 8, 
                 onComplete: () => {
-                    player.alpha = 1;
+                    if(player) player.alpha = 1;
                     isInvulnerable = false;
                 }
             });
@@ -425,14 +412,15 @@
                 player.body.setVelocityX(moveDir * hizAyari);
             }
 
-            // Canavarların yön kontrolü (Eğer dondurulmadıysa)
             if (!isAbilityActive || secilenKarakter !== "Neriman") {
-                monsters.children.iterate((monster) => {
-                    if (monster && monster.body && monster.body.blocked) {
-                        if (monster.body.blocked.left) monster.body.setVelocityX(60);
-                        if (monster.body.blocked.right) monster.body.setVelocityX(-60);
-                    }
-                });
+                if (monsters && monsters.children) {
+                    monsters.children.iterate((monster) => {
+                        if (monster && monster.body && monster.body.blocked) {
+                            if (monster.body.blocked.left) monster.body.setVelocityX(60);
+                            if (monster.body.blocked.right) monster.body.setVelocityX(-60);
+                        }
+                    });
+                }
             }
         }
     </script>
