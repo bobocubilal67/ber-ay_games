@@ -8,7 +8,6 @@
     <style>
         * { box-sizing: border-box; user-select: none; -webkit-user-select: none; }
         
-        /* 🌈 Cıvıl cıvıl, enerjik çocuk oyunu arka planı */
         body {
             margin: 0; padding: 0; 
             background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
@@ -18,7 +17,6 @@
             min-height: 100vh; overflow: hidden;
         }
 
-        /* 🎪 Karakter Seçim Paneli */
         #char-selection { 
             text-align: center; 
             padding: 30px 20px; 
@@ -31,7 +29,6 @@
             backdrop-filter: blur(5px);
         }
         
-        /* 🎉 Eğlenceli ve Renkli Karakter Butonları */
         .btn-char {
             color: #2c3e50; 
             padding: 14px 20px; 
@@ -49,7 +46,6 @@
             text-shadow: 1px 1px 0px rgba(255,255,255,0.5);
         }
 
-        /* Her Çocuğa Özel Neşeli Renkler */
         .btn-beril { background: #ffeaa7; border: 3px solid #fdcb6e; box-shadow: 0 5px 0 #f1c40f; }
         .btn-aybars { background: #fab1a0; border: 3px solid #ff7675; box-shadow: 0 5px 0 #e17055; }
         .btn-neriman { background: #dfe6e9; border: 3px solid #b2bec3; box-shadow: 0 5px 0 #636e72; }
@@ -57,7 +53,6 @@
         .btn-masal { background: #ff85a2; border: 3px solid #ff477e; box-shadow: 0 5px 0 #ff0a54; color: white; text-shadow: none; }
         .btn-bartu { background: #a29bfe; border: 3px solid #6c5ce7; box-shadow: 0 5px 0 #6c5ce7; color: white; text-shadow: none; }
 
-        /* Dokunma ve tıklama animasyonu (Yaylanma efekti) */
         .btn-char:active { 
             transform: scale(0.95) translateY(4px); 
             box-shadow: 0 1px 0 transparent;
@@ -101,12 +96,12 @@
 </head>
 <body>
 
-    <!-- 🎈 Yenilenmiş Renkli Başlangıç Ekranı -->
     <div id="char-selection">
         <div class="signature-top">✨ Designed by DtBY ✨</div>
         <h2 style="margin-bottom: 20px; font-size: 26px; color: #6c5ce7; text-shadow: 1px 1px 0px white;">Süper Kahramanını Seç! 🚀</h2>
         
-        <button class="btn-char btn-beril" onclick="startGame('Beril')">⚡ Beril (9 Yaş) - Süper Hız (Pasif)</button>
+        <!-- Beril'in yeni gücü butona yazıldı -->
+        <button class="btn-char btn-beril" onclick="startGame('Beril')">🍭 Beril (9 Yaş) - Şeker Yağmuru (8sn)</button>
         <button class="btn-char btn-aybars" onclick="startGame('Aybars')">🦘 Aybars (2 Yaş) - Mega Zıplama (Pasif)</button>
         <button class="btn-char btn-neriman" onclick="startGame('Neriman')">❄️ Neriman (9 Yaş) - Canavarları Dondur (15sn)</button>
         <button class="btn-char btn-meryem" onclick="startGame('Meryem')">🛡️ Meryem (9 Yaş) - Havada 2 Kez Zıplama (Sürekli)</button>
@@ -117,7 +112,6 @@
     </div>
 
     <div id="game-wrapper">
-        <!-- Oyun içi kodları aynen koruyabilirsiniz -->
         <div id="game-over-screen">
             <h2 id="end-title">OYUN BİTTİ</h2>
             <p id="end-msg" style="color:#555; margin-bottom:20px; font-weight: bold;">Canavara yakalandın!</p>
@@ -141,8 +135,457 @@
     </div>
 
     <script>
-        // Phaser oyun mantığı ve fonksiyon kodlarınızın tamamını 
-        // bir önceki mesajdaki gibi bu alt kısma ekleyerek devam edebilirsiniz.
+        let secilenKarakter = ""; let moveDir = 0; let gameInstance = null;
+        let playerLives = 1; let isInvulnerable = false; let isAbilityActive = false;
+        let abilityTimerEvent = null; let bossActive = false; let bossTimer = 30; let bossTimerEvent = null;
+        
+        let meryemJumpCount = 0;
+        let specialAbilityTimer = 0;
+        let specialAbilityTimerEvent = null;
+        
+        let currentLevel = 1;
+        let monsterCounter = 0; 
+
+        function startGame(karakterIsmi) {
+            secilenKarakter = karakterIsmi; playerLives = 1; isInvulnerable = false; isAbilityActive = false;
+            bossActive = false; bossTimer = 30; moveDir = 0; meryemJumpCount = 0; currentLevel = 1; monsterCounter = 0;
+            
+            document.getElementById('char-selection').style.display = 'none';
+            document.getElementById('game-wrapper').style.display = 'block';
+            document.getElementById('game-over-screen').style.display = 'none';
+            
+            const abBtn = document.getElementById('btnAbility');
+            // Beril artık aktif bir güce sahip olduğu için butonunu gizlemiyoruz!
+            if(secilenKarakter !== "Aybars" && secilenKarakter !== "Meryem") {
+                abBtn.style.display = "flex"; abBtn.style.opacity = "1";
+            } else { abBtn.style.display = "none"; }
+
+            setupMobileControls();
+            if (gameInstance) gameInstance.destroy(true);
+            gameInstance = new Phaser.Game(config);
+        }
+
+        function restartGameInstance() { closeGameInstance(); }
+        function closeGameInstance() {
+            if (gameInstance) { gameInstance.destroy(true); gameInstance = null; }
+            if (abilityTimerEvent) abilityTimerEvent.remove();
+            if (bossTimerEvent) bossTimerEvent.remove();
+            if (specialAbilityTimerEvent) specialAbilityTimerEvent.remove();
+            moveDir = 0;
+            document.getElementById('game-wrapper').style.display = 'none';
+            document.getElementById('char-selection').style.display = 'block';
+        }
+
+        function setupMobileControls() {
+            document.getElementById('btnLeft').onpointerdown = () => { moveDir = -1; };
+            document.getElementById('btnLeft').onpointerup = () => { moveDir = 0; };
+            document.getElementById('btnRight').onpointerdown = () => { moveDir = 1; };
+            document.getElementById('btnRight').onpointerup = () => { moveDir = 0; };
+            document.getElementById('btnJump').onpointerdown = () => { makePlayerJump(); };
+            document.getElementById('btnAbility').onpointerdown = () => { triggerSpecialAbility(); };
+        }
+
+        function makePlayerJump() {
+            if (!player || !player.body) return;
+
+            if (secilenKarakter === "Meryem") {
+                if (player.body.touching.down || player.body.blocked.down) {
+                    meryemJumpCount = 1;
+                    player.body.setVelocityY(-380);
+                } else if (meryemJumpCount < 2) {
+                    meryemJumpCount = 2;
+                    player.body.setVelocityY(-360);
+                    gameInstance.scene.scenes[0].showFloatingText("ÇİFT ZIPLAMA! 🛡️", 0x3498db);
+                }
+                return;
+            }
+
+            if (player.body.touching.down || player.body.blocked.down) {
+                let gravityFactor = (isAbilityActive && secilenKarakter === "Masal") ? -220 : -380;
+                let ziplamaGucu = (secilenKarakter === "Aybars") ? -580 : gravityFactor;
+                player.body.setVelocityY(ziplamaGucu);
+            }
+        }
+
+        function triggerSpecialAbility() {
+            if (isAbilityActive) return;
+            isAbilityActive = true;
+            document.getElementById('btnAbility').style.opacity = "0.4";
+
+            let activeScene = gameInstance.scene.scenes[0];
+            
+            // Beril için 8 saniye, Bartu için 10 saniye, diğerleri için 15 saniye sürer
+            if (secilenKarakter === "Beril") specialAbilityTimer = 8;
+            else if (secilenKarakter === "Bartu") specialAbilityTimer = 10;
+            else specialAbilityTimer = 15;
+
+            if (secilenKarakter === "Beril") {
+                activeScene.showFloatingText("ŞEKER YAĞMURU BAŞLADI! 🍭", 0xff477e);
+                monsters.children.iterate((m) => { 
+                    if(m && m.body) {
+                        m.isCandy = true; // Şeker modunu aç
+                        m.setFillStyle(0xff85a2); // Pembe yap
+                        m.setStrokeStyle(2, 0xffffffff); // Kenarlık ekle
+                    } 
+                });
+            } else if (secilenKarakter === "Neriman") {
+                activeScene.showFloatingText("DONDURMA GÜCÜ AKTİF! ❄️", 0x3498db);
+                monsters.children.iterate((m) => { if(m && m.body && !m.isStunned) m.body.setVelocityX(0); });
+            } else if (secilenKarakter === "Masal") {
+                activeScene.showFloatingText("SÜZÜLME AKTİF! 🎈", 0xf1c40f);
+                activeScene.physics.world.gravity.y = 250; 
+            } else if (secilenKarakter === "Bartu") {
+                activeScene.showFloatingText("GÖRÜNMEZLİK AKTİF! 👻", 0x9b59b6);
+                player.setAlpha(0.4); 
+            }
+
+            abilityText.setText('ÖZEL GÜÇ SÜRESİ: ' + specialAbilityTimer + ' sn');
+            
+            specialAbilityTimerEvent = activeScene.time.addEvent({
+                delay: 1000, loop: true,
+                callback: () => {
+                    specialAbilityTimer--;
+                    if (specialAbilityTimer > 0) {
+                        abilityText.setText('ÖZEL GÜÇ SÜRESİ: ' + specialAbilityTimer + ' sn');
+                    } else {
+                        abilityText.setText('');
+                        if(specialAbilityTimerEvent) specialAbilityTimerEvent.remove();
+                    }
+                }
+            });
+
+            abilityTimerEvent = activeScene.time.delayedCall(specialAbilityTimer * 1000, () => {
+                isAbilityActive = false;
+                document.getElementById('btnAbility').style.opacity = "1";
+                abilityText.setText('');
+                
+                activeScene.physics.world.gravity.y = 800; 
+                if(player) player.setAlpha(1); 
+                
+                // Beril'in gücü bitince hayatta kalan şekerleri geri canavara çevir
+                monsters.children.iterate((m) => { 
+                    if(m && m.body) {
+                        m.isCandy = false;
+                        if(!m.isStunned) {
+                            m.setFillStyle(0xc0392b);
+                            m.setStrokeStyle(0, 0x000000);
+                        }
+                    } 
+                });
+
+                activeScene.showFloatingText("Özel Güç Bitti", 0xffffff);
+            }, [], activeScene);
+        }
+
+        const config = {
+            type: Phaser.AUTO, width: 800, height: 450, parent: 'game-container',
+            physics: { default: 'arcade', arcade: { gravity: { y: 800 }, debug: false } },
+            scene: { create: create, update: update }
+        };
+
+        let player; let platforms; let monsters; let hearts; let bosses;
+        let infoText; let livesText; let bossText; let abilityText;
+
+        function create() {
+            let self = this;
+            this.physics.world.setBounds(0, 0, 3200, 450); 
+            this.cameras.main.setBounds(0, 0, 3200, 450);
+
+            for (let i = 0; i < 3200; i += 400) {
+                this.add.grid(i + 200, 225, 400, 450, 40, 40, 0x34495e, 0.3, 0x2c3e50, 0.5);
+            }
+
+            platforms = this.physics.add.group({ allowGravity: false, immovable: true });
+            
+            let ground = this.add.rectangle(1600, 435, 3200, 30, 0x27ae60);
+            platforms.add(ground);
+
+            let platformHeights = [370, 310, 250, 190, 130, 340, 220, 160];
+            
+            if (currentLevel === 1) {
+                for (let i = 0; i < 45; i++) {
+                    let x = 200 + (i * 65); 
+                    let y = platformHeights[i % platformHeights.length];
+                    let w = Phaser.Math.Between(80, 130);
+                    let block = this.add.rectangle(x, y, w, 14, 0xe67e22);
+                    platforms.add(block);
+                }
+            } else if (currentLevel === 2) {
+                for (let i = 0; i < 45; i++) {
+                    let x = 200 + (i * 65); 
+                    let y = platformHeights[i % platformHeights.length];
+                    let w = Phaser.Math.Between(80, 120);
+                    let block = this.add.rectangle(x, y, w, 14, 0x3498db);
+                    platforms.add(block);
+                    
+                    let randomAngle = Phaser.Math.Between(-15, 15);
+                    block.setAngle(randomAngle);
+                    if(block.body) {
+                         block.body.setSize(w, 14);
+                    }
+                }
+            } else if (currentLevel === 3) {
+                for (let i = 0; i < 40; i++) {
+                    let x = 200 + (i * 70); 
+                    let y = platformHeights[i % platformHeights.length];
+                    let w = Phaser.Math.Between(85, 120);
+                    let block = this.add.rectangle(x, y, w, 14, 0x9b59b6);
+                    platforms.add(block);
+                    
+                    if (i % 2 === 0) {
+                        self.tweens.add({
+                            targets: block.body.velocity,
+                            y: 80, yoyo: true, repeat: -1, duration: Phaser.Math.Between(1500, 2500)
+                        });
+                    } else {
+                        self.tweens.add({
+                            targets: block.body.velocity,
+                            x: 60, yoyo: true, repeat: -1, duration: Phaser.Math.Between(1500, 3000)
+                        });
+                    }
+                }
+            }
+
+            player = this.add.rectangle(100, 350, 32, 45, 0x9b59b6);
+            this.physics.add.existing(player);
+            player.body.setCollideWorldBounds(true);
+            this.cameras.main.startFollow(player, true, 0.1, 0.1); 
+
+            monsters = this.physics.add.group();
+            let monsterCount = currentLevel * 5 + 8; 
+            for(let m = 0; m < monsterCount; m++) {
+                spawnMonster(this, Phaser.Math.Between(500, 2300), Phaser.Math.Between(100, 300));
+            }
+
+            hearts = this.physics.add.group();
+            this.time.addEvent({
+                delay: Phaser.Math.Between(6000, 10000),
+                callback: () => {
+                    if (hearts.getLength() < 2 && playerLives < 3 && !self.physics.world.isPaused && !bossActive) {
+                        let heart = self.add.circle(player.x + Phaser.Math.Between(120, 280), Phaser.Math.Between(150, 350), 12, 0xe74c3c);
+                        hearts.add(heart); self.physics.add.existing(heart); heart.body.setAllowGravity(false);
+                    }
+                }, loop: true
+            });
+
+            bosses = this.physics.add.group({ allowGravity: true });
+
+            this.physics.add.collider(player, platforms);
+            this.physics.add.collider(monsters, platforms);
+            this.physics.add.collider(bosses, platforms);
+
+            this.physics.add.overlap(player, hearts, (p, h) => {
+                if (playerLives < 3) { playerLives++; h.destroy(); livesText.setText('❤️ Canlar: ' + '❤️'.repeat(playerLives)); self.showFloatingText("+1 CAN!", 0x2ecc71); }
+            });
+
+            this.physics.add.overlap(player, monsters, (p, monster) => {
+                if (isAbilityActive && secilenKarakter === "Bartu") return;
+
+                // 🍬 BERİL'İN ŞEKER ETKİLEŞİM KURALI: Canavarlar şeker modundaysa nereden değerse değsin toplanır!
+                if (monster.isCandy) {
+                    monster.destroy();
+                    self.showFloatingText("ŞEKER KAPALDI! 🍬", 0xff477e);
+                    return;
+                }
+
+                let isOnTop = (p.body.velocity.y >= -50 && p.y < monster.y - 8);
+
+                if (isOnTop) {
+                    if (monster.touchCount === 1) {
+                        monster.destroy();
+                        self.showFloatingText("YOK EDİLDİ! 💥", 0x2ecc71);
+                        p.body.setVelocityY(-260); 
+                        meryemJumpCount = 1;
+                    } else if (!monster.isStunned) {
+                        monster.isStunned = true;
+                        monster.touchCount = 1; 
+                        monster.setFillStyle(0x3498db); 
+                        
+                        if (monster.body) {
+                            monster.body.setVelocityX(0);
+                            monster.body.setVelocityY(0);
+                            monster.body.setSize(14, 8);
+                        }
+                        
+                        self.showFloatingText("BAYILDI! 💤", 0xf1c40f);
+                        p.body.setVelocityY(-280); 
+                        meryemJumpCount = 1;
+                    }
+                } else {
+                    if (monster.isStunned) return;
+                    if (isInvulnerable) return;
+
+                    if (playerLives > 1) {
+                        playerLives--; 
+                        livesText.setText('❤️ Canlar: ' + '❤️'.repeat(playerLives)); 
+                        triggerInvulnerability(self);
+                    } else {
+                        gameOver(self, "Canavara yakalandın ve hiç kalbin kalmadı!");
+                    }
+                }
+            });
+
+            let levelLabel = (currentLevel === 3) ? "3 (FİNAL)" : currentLevel;
+            infoText = this.add.text(15, 15, 'Kahraman: ' + secilenKarakter + ' | Bölüm: ' + levelLabel, { fontSize: '15px', color: '#fff', fontWeight: 'bold' }).setScrollFactor(0).setDepth(100);
+            livesText = this.add.text(15, 40, '❤️ Canlar: ❤️', { fontSize: '15px', color: '#e74c3c', fontWeight: 'bold' }).setScrollFactor(0).setDepth(100);
+            
+            abilityText = this.add.text(400, 25, '', { fontSize: '18px', color: '#3498db', fontWeight: 'bold', backgroundColor: '#000000', padding: 4 }).setOrigin(0.5).setScrollFactor(0).setDepth(102);
+            bossText = this.add.text(400, 60, '', { fontSize: '20px', color: '#f1c40f', fontWeight: 'bold', backgroundColor: '#000000', padding: 5 }).setOrigin(0.5).setScrollFactor(0).setDepth(101);
+
+            this.showFloatingText = function(text, color) {
+                let txt = self.add.text(player.x - 40, player.y - 50, text, { fontSize: '14px', color: Phaser.Display.Color.IntegerToColor(color).rgba, fontWeight:'bold' }).setDepth(99);
+                self.tweens.add({ targets: txt, y: txt.y - 50, alpha: 0, duration: 1200, onComplete: () => { if(txt) txt.destroy(); } });
+            };
+        }
+
+        function spawnMonster(scene, x, y) {
+            monsterCounter++;
+            let m = scene.add.rectangle(x, y, 24, 24, 0xc0392b); 
+            m.canavarKimligi = monsterCounter; 
+            m.isStunned = false; 
+            m.touchCount = 0; 
+            m.isCandy = false; // Yeni canavarlar şeker modunda başlamaz
+            monsters.add(m);
+            scene.physics.add.existing(m); 
+            m.body.setCollideWorldBounds(true);
+            
+            // Eğer Beril şeker yağmurunu zaten açmışken yeni canavar doğarsa onu da şeker yap
+            if (isAbilityActive && secilenKarakter === "Beril") {
+                m.isCandy = true;
+                m.setFillStyle(0xff85a2);
+                m.setStrokeStyle(2, 0xffffffff);
+            }
+        }
+
+        function triggerInvulnerability(scene) {
+            isInvulnerable = true; scene.showFloatingText("KORUMA AKTİF", 0xf39c12);
+            scene.tweens.add({
+                targets: player, alpha: 0.2, duration: 150, yoyo: true, repeat: 8,
+                onComplete: () => { if(player) player.alpha = 1; isInvulnerable = false; }
+            });
+        }
+
+        function advanceLevel(scene) {
+            scene.physics.pause();
+            if(bossTimerEvent) bossTimerEvent.remove();
+            if(specialAbilityTimerEvent) specialAbilityTimerEvent.remove();
+            
+            currentLevel++;
+            bossActive = false;
+            bossTimer = 30;
+
+            let upperText = (currentLevel === 3) ? "FİNAL BÖLÜMÜNE GEÇİLİYOR!" : `BÖLÜM ${currentLevel}'YE GEÇİLİYOR!`;
+            bossText.setText(upperText).setColor("#2ecc71");
+
+            scene.time.delayedCall(3000, () => {
+                bossText.setText('');
+                scene.scene.restart();
+            });
+        }
+
+        function gameOver(scene, message, title = "OYUN BİTTİ") {
+            scene.physics.pause(); moveDir = 0;
+            if(bossTimerEvent) bossTimerEvent.remove();
+            if(specialAbilityTimerEvent) specialAbilityTimerEvent.remove();
+            document.getElementById('end-title').innerText = title;
+            document.getElementById('end-title').style.color = (title === "TEBRİKLER!") ? "#2ecc71" : "#e74c3c";
+            document.getElementById('end-msg').innerText = message;
+            document.getElementById('game-over-screen').style.display = 'block';
+        }
+
+        function update() {
+            // Beril şeker toplama heyecanını yaşasın diye normal hızı biraz yüksek tutuldu (240)
+            let hizAyari = (secilenKarakter === "Beril") ? 240 : 190;
+            if (player && player.body && !player.scene.physics.world.isPaused) {
+                player.body.setVelocityX(moveDir * hizAyari);
+            }
+
+            if (!bossActive && monsters && monsters.children && (!isAbilityActive || (secilenKarakter !== "Neriman" && secilenKarakter !== "Beril"))) {
+                monsters.children.iterate((m) => {
+                    if (m && m.body && player) {
+                        if (m.isStunned) {
+                            m.body.setVelocityX(0);
+                            return;
+                        }
+
+                        if (player.x > m.x) {
+                            m.body.setVelocityX(85);
+                        } else {
+                            m.body.setVelocityX(-85);
+                        }
+
+                        if (m.body.blocked.left || m.body.blocked.right || (player.y < m.y - 35 && Phaser.Math.Between(0, 100) > 95)) {
+                            if (m.body.blocked.down || m.body.touching.down) {
+                                m.body.setVelocityY(-340);
+                            }
+                        }
+                    }
+                });
+            }
+
+            if (player.x > 2500 && !bossActive) {
+                bossActive = true;
+                let scene = player.scene;
+                
+                scene.cameras.main.stopFollow();
+                monsters.clear(true, true); 
+
+                let spawnCount = (currentLevel === 3) ? 2 : 1;
+                
+                for(let b=0; b < spawnCount; b++) {
+                    let bossItem = scene.add.rectangle(player.x + 200 + (b * 70), 150, 45, 60, 0x2c3e50);
+                    bosses.add(bossItem);
+                    scene.physics.add.existing(bossItem);
+                    bossItem.body.setCollideWorldBounds(true);
+                    bossItem.body.setBounce(0.3);
+                    
+                    scene.physics.add.overlap(player, bossItem, () => {
+                        if(!isInvulnerable) {
+                            gameOver(scene, "Bölüm sonu canavarına elendin!");
+                        }
+                    });
+                }
+
+                scene.time.addEvent({
+                    delay: 800, loop: true,
+                    callback: () => {
+                        bosses.children.iterate((bossItem) => {
+                            if (bossItem && bossItem.body) {
+                                if (player.x > bossItem.x) {
+                                    bossItem.body.setVelocityX(145);
+                                } else {
+                                    bossItem.body.setVelocityX(-145);
+                                }
+
+                                if (bossItem.body.blocked.left || bossItem.body.blocked.right || (player.y < bossItem.y - 40 && Phaser.Math.Between(0,10) > 4)) {
+                                    if(bossItem.body.blocked.down || bossItem.body.touching.down) {
+                                        bossItem.body.setVelocityY(-350);
+                                    }
+                                }
+                            }
+                        });
+                    }
+                });
+
+                let headerMsg = (currentLevel === 3) ? 'FİNAL BOSS SAVAŞI! KALAN SÜRE: ' : 'BOSS SAVAŞI! KALAN SÜRE: ';
+                bossText.setText(headerMsg + bossTimer + 'sn').setColor("#f1c40f");
+                
+                bossTimerEvent = scene.time.addEvent({
+                    delay: 1000, loop: true,
+                    callback: () => {
+                        bossTimer--;
+                        bossText.setText(headerMsg + bossTimer + 'sn');
+                        if (bossTimer <= 0) {
+                            if (currentLevel < 3) {
+                                advanceLevel(scene);
+                            } else {
+                                gameOver(scene, "TÜM BÖLÜMLERİ GEÇTİN! MUHTEŞEM BİR ZAFER!", "TEBRİKLER!");
+                            }
+                        }
+                    }
+                });
+            }
+        }
     </script>
 </body>
 </html>
