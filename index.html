@@ -65,10 +65,10 @@
         <h2 style="margin-bottom: 25px; font-size: 24px;">Süper Kahramanını Seç!</h2>
         <button class="btn-char" onclick="startGame('Beril')">⚡ Beril (9 Yaş) - Süper Hız (Pasif)</button>
         <button class="btn-char" onclick="startGame('Aybars')">🦘 Aybars (2 Yaş) - Mega Zıplama (Pasif)</button>
-        <button class="btn-char" onclick="startGame('Neriman')">❄️ Neriman (9 Yaş) - Canavarları Dondur</button>
+        <button class="btn-char" onclick="startGame('Neriman')">❄️ Neriman (9 Yaş) - Canavarları Dondur (15sn)</button>
         <button class="btn-char" onclick="startGame('Meryem')">🛡️ Meryem (9 Yaş) - Havada 2 Kez Zıplama (Sürekli)</button>
-        <button class="btn-char" onclick="startGame('Masal')">🎈 Masal (5 Yaş) - Süzülerek Uçma</button>
-        <button class="btn-char" onclick="startGame('Bartu')">💥 Bartu (9 Yaş) - Canavar İteleme (5 Hak)</button>
+        <button class="btn-char" onclick="startGame('Masal')">🎈 Masal (5 Yaş) - Süzülerek Uçma (15sn)</button>
+        <button class="btn-char" onclick="startGame('Bartu')">👻 Bartu (9 Yaş) - Görünmezlik Gücü (10sn)</button>
         <div style="margin-top:25px; font-size:13px; color:#ccc; font-weight: bold;">Bilal Yıldırım tarafından yapılmıştır.</div>
     </div>
 
@@ -100,20 +100,19 @@
         let playerLives = 1; let isInvulnerable = false; let isAbilityActive = false;
         let abilityTimerEvent = null; let bossActive = false; let bossTimer = 30; let bossTimerEvent = null;
         
-        // Yeni Mekanik Değişkenleri
         let meryemJumpCount = 0;
-        let bartuPushCount = 0;
+        let specialAbilityTimer = 0;
+        let specialAbilityTimerEvent = null;
 
         function startGame(karakterIsmi) {
             secilenKarakter = karakterIsmi; playerLives = 1; isInvulnerable = false; isAbilityActive = false;
-            bossActive = false; bossTimer = 30; moveDir = 0; meryemJumpCount = 0; bartuPushCount = 0;
+            bossActive = false; bossTimer = 30; moveDir = 0; meryemJumpCount = 0;
             
             document.getElementById('char-selection').style.display = 'none';
             document.getElementById('game-wrapper').style.display = 'block';
             document.getElementById('game-over-screen').style.display = 'none';
             
             const abBtn = document.getElementById('btnAbility');
-            // Meryem'in gücü pasif çift zıplama olduğu için artık ona da yıldız butonunu göstermiyoruz
             if(secilenKarakter !== "Beril" && secilenKarakter !== "Aybars" && secilenKarakter !== "Meryem") {
                 abBtn.style.display = "flex"; abBtn.style.opacity = "1";
             } else { abBtn.style.display = "none"; }
@@ -128,6 +127,7 @@
             if (gameInstance) { gameInstance.destroy(true); gameInstance = null; }
             if (abilityTimerEvent) abilityTimerEvent.remove();
             if (bossTimerEvent) bossTimerEvent.remove();
+            if (specialAbilityTimerEvent) specialAbilityTimerEvent.remove();
             moveDir = 0;
             document.getElementById('game-wrapper').style.display = 'none';
             document.getElementById('char-selection').style.display = 'block';
@@ -145,20 +145,18 @@
         function makePlayerJump() {
             if (!player || !player.body) return;
 
-            // MERYEM ÇİFT ZIPLAMA MEKANİĞİ (Süre sınırı yok, kalıcı)
             if (secilenKarakter === "Meryem") {
                 if (player.body.touching.down) {
                     meryemJumpCount = 1;
                     player.body.setVelocityY(-380);
                 } else if (meryemJumpCount < 2) {
                     meryemJumpCount = 2;
-                    player.body.setVelocityY(-360); // Havada ikinci zıplama
+                    player.body.setVelocityY(-360);
                     gameInstance.scene.scenes[0].showFloatingText("ÇİFT ZIPLAMA! 🛡️", 0x3498db);
                 }
                 return;
             }
 
-            // Diğer Karakterlerin Zıplama Standartları
             if (player.body.touching.down) {
                 let gravityFactor = (isAbilityActive && secilenKarakter === "Masal") ? -220 : -380;
                 let ziplamaGucu = (secilenKarakter === "Aybars") ? -580 : gravityFactor;
@@ -167,35 +165,52 @@
         }
 
         function triggerSpecialAbility() {
-            let activeScene = gameInstance.scene.scenes[0];
-
-            // BARTU İTELEME GÜCÜ YÜKLEME (5 Hak Verir)
-            if (secilenKarakter === "Bartu") {
-                isAbilityActive = true;
-                bartuPushCount = 5; // 5 canavar hakkı tanındı
-                player.setTint(0xe67e22); 
-                activeScene.showFloatingText("İTELEME GÜCÜ YÜKLENDİ (5 HAK)!", 0xe67e22);
-                document.getElementById('btnAbility').style.opacity = "0.4";
-                return;
-            }
-
             if (isAbilityActive) return;
             isAbilityActive = true;
             document.getElementById('btnAbility').style.opacity = "0.4";
-            activeScene.showFloatingText("ÖZEL GÜÇ AKTİF!", 0xf1c40f);
+
+            let activeScene = gameInstance.scene.scenes[0];
+            
+            // Kahramana göre süre belirleme (Bartu: 10sn, Diğerleri: 15sn)
+            specialAbilityTimer = (secilenKarakter === "Bartu") ? 10 : 15;
 
             if (secilenKarakter === "Neriman") {
+                activeScene.showFloatingText("DONDURMA GÜCÜ AKTİF! ❄️", 0x3498db);
                 monsters.children.iterate((m) => { if(m && m.body) m.body.setVelocityX(0); });
             } else if (secilenKarakter === "Masal") {
+                activeScene.showFloatingText("SÜZÜLME AKTİF! 🎈", 0xf1c40f);
                 activeScene.physics.world.gravity.y = 250; 
+            } else if (secilenKarakter === "Bartu") {
+                activeScene.showFloatingText("GÖRÜNMEZLİK AKTİF! 👻", 0x9b59b6);
+                player.setAlpha(0.4); // Görünmezlik efekti için yarı saydam yapıyoruz
             }
 
-            // Neriman ve Masal için eski 15sn kuralı kalabilir veya isterseniz değiştirilebilir.
-            abilityTimerEvent = activeScene.time.delayedCall(15000, () => {
+            // 🕒 ÖZEL GÜÇ GERİ SAYIM SAYACI BAŞLANGICI
+            abilityText.setText('ÖZEL GÜÇ SÜRESİ: ' + specialAbilityTimer + ' sn');
+            
+            specialAbilityTimerEvent = activeScene.time.addEvent({
+                delay: 1000, loop: true,
+                callback: () => {
+                    specialAbilityTimer--;
+                    if (specialAbilityTimer > 0) {
+                        abilityText.setText('ÖZEL GÜÇ SÜRESİ: ' + specialAbilityTimer + ' sn');
+                    } else {
+                        abilityText.setText('');
+                        if(specialAbilityTimerEvent) specialAbilityTimerEvent.remove();
+                    }
+                }
+            });
+
+            // Güç bitiminde eski hallerine döndürme mekaniği
+            abilityTimerEvent = activeScene.time.delayedCall(specialAbilityTimer * 1000, () => {
                 isAbilityActive = false;
                 document.getElementById('btnAbility').style.opacity = "1";
+                abilityText.setText('');
+                
                 activeScene.physics.world.gravity.y = 800; 
+                if(player) player.setAlpha(1); // Bartu görünmezlikten çıkar
                 activeScene.showFloatingText("Özel Güç Bitti", 0xffffff);
+                
                 if(secilenKarakter === "Neriman" && monsters) {
                     monsters.children.iterate((m) => { if(m && m.body) m.body.setVelocityX(-70); });
                 }
@@ -209,7 +224,7 @@
         };
 
         let player; let platforms; let monsters; let hearts; let boss;
-        let infoText; let livesText; let bossText;
+        let infoText; let livesText; let bossText; let abilityText;
 
         function create() {
             let self = this;
@@ -264,23 +279,8 @@
             this.physics.add.overlap(player, monsters, (p, monster) => {
                 if (isInvulnerable) return;
                 
-                // BARTU KONTROLÜ (Sadece 5 iteleme hakkı varken korur ve iter)
-                if (isAbilityActive && secilenKarakter === "Bartu" && bartuPushCount > 0) {
-                    let yon = (monster.x > player.x) ? 400 : -400;
-                    monster.body.setVelocityX(yon);
-                    monster.body.setVelocityY(-200);
-                    
-                    bartuPushCount--; // Bir hak düştü
-                    self.showFloatingText(`İTELENDİ! Kalan Hak: ${bartuPushCount}`, 0xe67e22);
-                    
-                    if (bartuPushCount <= 0) {
-                        isAbilityActive = false;
-                        if(player.clearTint) player.clearTint();
-                        document.getElementById('btnAbility').style.opacity = "1";
-                        self.showFloatingText("İteleme Enerjisi Bitti!", 0xffffff);
-                    }
-                    return;
-                }
+                // BARTU GÖRÜNMEZLİK KONTROLÜ (Görünmezken canavarlar hasar veremez)
+                if (isAbilityActive && secilenKarakter === "Bartu") return;
 
                 if (playerLives > 1) {
                     playerLives--; livesText.setText('❤️ Canlar: ' + '❤️'.repeat(playerLives)); triggerInvulnerability(self);
@@ -292,8 +292,11 @@
             infoText = this.add.text(15, 15, 'Kahraman: ' + secilenKarakter, { fontSize: '15px', color: '#fff', fontWeight: 'bold' }).setScrollFactor(0).setDepth(100);
             livesText = this.add.text(15, 40, '❤️ Canlar: ❤️', { fontSize: '15px', color: '#e74c3c', fontWeight: 'bold' }).setScrollFactor(0).setDepth(100);
             
-            // Kamera takip koordinatları yüzünden yazının kaybolmaması için sabit konumu garantiye aldık
-            bossText = this.add.text(400, 40, '', { fontSize: '20px', color: '#f1c40f', fontWeight: 'bold', backgroundColor: '#000000', padding: 5 }).setOrigin(0.5).setScrollFactor(0).setDepth(101);
+            // 🕒 Özel Güç Süre Sayacı (Üst orta alanda mavi renkli kutu şeklinde)
+            abilityText = this.add.text(400, 25, '', { fontSize: '18px', color: '#3498db', fontWeight: 'bold', backgroundColor: '#000000', padding: 4 }).setOrigin(0.5).setScrollFactor(0).setDepth(102);
+            
+            // Boss Alanı Geri Sayım Saati
+            bossText = this.add.text(400, 60, '', { fontSize: '20px', color: '#f1c40f', fontWeight: 'bold', backgroundColor: '#000000', padding: 5 }).setOrigin(0.5).setScrollFactor(0).setDepth(101);
 
             this.showFloatingText = function(text, color) {
                 let txt = self.add.text(player.x - 40, player.y - 50, text, { fontSize: '14px', color: Phaser.Display.Color.IntegerToColor(color).rgba, fontWeight:'bold' }).setDepth(99);
@@ -317,6 +320,7 @@
         function gameOver(scene, message, title = "OYUN BİTTİ") {
             scene.physics.pause(); moveDir = 0;
             if(bossTimerEvent) bossTimerEvent.remove();
+            if(specialAbilityTimerEvent) specialAbilityTimerEvent.remove();
             document.getElementById('end-title').innerText = title;
             document.getElementById('end-title').style.color = (title === "TEBRİKLER!") ? "#2ecc71" : "#e74c3c";
             document.getElementById('end-msg').innerText = message;
@@ -329,7 +333,7 @@
                 player.body.setVelocityX(moveDir * hizAyari);
             }
 
-            // Boss Odası Tetiklenmesi
+            // Boss Tetiklenmesi
             if (player.x > 2500 && !bossActive) {
                 bossActive = true;
                 let scene = player.scene;
@@ -342,6 +346,7 @@
                 boss.body.setCollideWorldBounds(false).setAllowGravity(false);
                 
                 scene.physics.add.overlap(player, boss, () => {
+                    // Bartu görünmez bile olsa Boss alanında hasar alır (Dengeleme için)
                     if(!isInvulnerable) {
                         gameOver(scene, "Bölüm sonu canavarına elendin!");
                     }
@@ -357,7 +362,6 @@
                     }
                 });
 
-                // Geri sayım saati ekranın en üstünde sabitleniyor
                 bossText.setText('BOSS SAVAŞI! KALAN SÜRE: ' + bossTimer + 'sn');
                 bossTimerEvent = scene.time.addEvent({
                     delay: 1000, loop: true,
