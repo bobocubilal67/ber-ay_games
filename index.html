@@ -110,10 +110,48 @@
             pointer-events: none;
             left: 0;
         }
+
+        /* 🚨 OYUN BİTTİ PANELİ (POP-UP) */
+        #game-over-screen {
+            display: none;
+            position: absolute;
+            top: 20%;
+            left: 50%;
+            transform: translate(-50%, 0);
+            background: rgba(0, 0, 0, 0.9);
+            border: 3px solid #e74c3c;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            z-index: 1000;
+            width: 85%;
+            max-width: 350px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.7);
+        }
+        #game-over-screen h2 {
+            color: #e74c3c;
+            margin-top: 0;
+            font-size: 24px;
+        }
+        .popup-btn {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-restart { background-color: #2ecc71; color: white; }
+        .btn-close-game { background-color: #7f8c8d; color: white; }
+        .popup-btn:active { transform: scale(0.98); }
     </style>
 </head>
 <body>
 
+    <!-- Karakter Seçim Ekranı -->
     <div id="char-selection">
         <div class="signature-top">Designed by DtBY</div>
         <h2 style="margin-bottom: 25px;">Süper Kahramanını Seç!</h2>
@@ -126,9 +164,19 @@
         <div style="margin-top:20px; font-size:12px; color:#aaa;">Bilal Yıldırım tarafından yapılmıştır.</div>
     </div>
 
+    <!-- Oyun Alanı -->
     <div id="game-wrapper">
+        <!-- Oyun İçi Menü Paneli -->
+        <div id="game-over-screen">
+            <h2>OYUN BİTTİ</h2>
+            <p id="game-over-msg" style="color:#ddd; margin-bottom:20px;">Canavara yakalandın!</p>
+            <button class="popup-btn btn-restart" onclick="restartGameInstance()">🔄 Yeniden Başlat</button>
+            <button class="popup-btn btn-close-game" onclick="closeGameInstance()">❌ Oyunu Kapat</button>
+        </div>
+
         <div id="game-container"></div>
         
+        <!-- Mobil Kontrol D-Pad -->
         <div class="mobile-controls">
             <div class="nav-buttons">
                 <button id="btnLeft" class="ctrl-btn">◀</button>
@@ -144,56 +192,74 @@
 
     <script>
         let secilenKarakter = "";
-        let moveDir = 0; // -1: Sol, 0: Dur, 1: Sağ
+        let moveDir = 0; 
+        let gameInstance = null;
 
         function startGame(karakterIsmi) {
             secilenKarakter = karakterIsmi;
             document.getElementById('char-selection').style.display = 'none';
             document.getElementById('game-wrapper').style.display = 'block';
+            document.getElementById('game-over-screen').style.display = 'none';
             
-            // Kontrol butonlarının basılı tutulma (Touch) eventlerini bağlıyoruz
             setupMobileControls();
             
-            // Oyunu Başlat
-            new Phaser.Game(config);
+            // Eğer eski bir oyun objesi varsa temizle
+            if (gameInstance) {
+                gameInstance.destroy(true);
+            }
+            // Yeni oyunu başlat
+            gameInstance = new Phaser.Game(config);
         }
 
-        // Basılı tutulduğu sürece sürekli hareket etme mekanizması
+        // Yeniden Başlat butonuna basınca çalışan fonksiyon
+        function restartGameInstance() {
+            document.getElementById('game-over-screen').style.display = 'none';
+            // Sayfayı yenilemeden sadece karakter seçimine atar ve temiz bir başlangıç sunar
+            closeGameInstance();
+        }
+
+        // Oyunu kapatıp ana ekrana dönme fonksiyonu
+        function closeGameInstance() {
+            if (gameInstance) {
+                gameInstance.destroy(true);
+                gameInstance = null;
+            }
+            moveDir = 0;
+            document.getElementById('game-wrapper').style.display = 'none';
+            document.getElementById('game-over-screen').style.display = 'none';
+            document.getElementById('char-selection').style.display = 'block';
+        }
+
         function setupMobileControls() {
             const btnLeft = document.getElementById('btnLeft');
             const btnRight = document.getElementById('btnRight');
             const btnJump = document.getElementById('btnJump');
 
-            // Sol Buton Dokunma Yönetimi
             btnLeft.addEventListener('touchstart', (e) => { e.preventDefault(); moveDir = -1; });
             btnLeft.addEventListener('touchend', () => { moveDir = 0; });
-            btnLeft.addEventListener('mousedown', () => { moveDir = -1; }); // PC testi için
+            btnLeft.addEventListener('mousedown', () => { moveDir = -1; });
             btnLeft.addEventListener('mouseup', () => { moveDir = 0; });
 
-            // Sağ Buton Dokunma Yönetimi
             btnRight.addEventListener('touchstart', (e) => { e.preventDefault(); moveDir = 1; });
             btnRight.addEventListener('touchend', () => { moveDir = 0; });
             btnRight.addEventListener('mousedown', () => { moveDir = 1; });
             btnRight.addEventListener('mouseup', () => { moveDir = 0; });
 
-            // Zıplama (Sadece dokunulduğu an tek tetikleme)
             btnJump.addEventListener('touchstart', (e) => { e.preventDefault(); makePlayerJump(); });
             btnJump.addEventListener('mousedown', () => { makePlayerJump(); });
         }
 
         function makePlayerJump() {
             if (player && player.body && player.body.touching.down) {
-                // Aybars (2 yaş) çok yüksek zıplıyor, diğerleri normal
                 let ziplamaGucu = (secilenKarakter === "Aybars") ? -550 : -320;
                 player.body.setVelocityY(ziplamaGucu);
             }
         }
 
-        // Phaser Yapılandırması
         const config = {
             type: Phaser.AUTO,
             width: 800,
-            height: 450, // Mobil ekran oranına uygun (16:9)
+            height: 450,
             parent: 'game-container',
             physics: {
                 default: 'arcade',
@@ -208,27 +274,19 @@
         let infoText;
 
         function create() {
-            // Arka Plan Rengi
             this.cameras.main.setBackgroundColor('#34495e');
 
-            // Platformlar
             platforms = this.physics.add.staticGroup();
-            
-            // Ana zemin
             let ground = this.add.rectangle(400, 435, 800, 30, 0x27ae60);
             platforms.add(ground);
 
-            // Havada asılı platformlar
             platforms.add(this.add.rectangle(600, 300, 200, 15, 0xe67e22));
             platforms.add(this.add.rectangle(200, 220, 200, 15, 0xe67e22));
 
-            // Oyuncu (Süper Kahraman)
-            // İleride buraya renkli kutu yerine kendi tasarladığınız süper kahraman resmini ekleyeceksiniz.
             player = this.add.rectangle(100, 350, 35, 50, 0x9b59b6);
             this.physics.add.existing(player);
             player.body.setCollideWorldBounds(true);
 
-            // Canavarlar
             monsters = this.physics.add.group();
             let monster1 = this.add.rectangle(600, 260, 25, 25, 0xc0392b);
             let monster2 = this.add.rectangle(200, 180, 25, 25, 0xc0392b);
@@ -241,29 +299,33 @@
                 monster.body.setVelocityX(-60);
             });
 
-            // Fizik Kuralları
             this.physics.add.collider(player, platforms);
             this.physics.add.collider(monsters, platforms);
+            
+            // 🚨 CANAVARA ÇARPINCA TETİKLENEN ALAN
             this.physics.add.overlap(player, monsters, () => {
-                this.physics.physicsTimeScale = 0;
-                infoText.setText('Oyun Bitti! Sayfayı Yenileyin.');
+                // Fizik motorunu durdur
+                this.physics.pause();
+                moveDir = 0; // Hareketi sıfırla
+                
+                // Pop-up ekranını göster
+                document.getElementById('game-over-screen').style.display = 'block';
             }, null, this);
 
-            // Ekran Bilgileri
             infoText = this.add.text(15, 15, 'Süper Kahraman: ' + secilenKarakter, { fontSize: '16px', color: '#fff', fontWeight: 'bold' });
         }
 
         function update() {
-            // Beril (9 yaş) hızlı koşuyor, diğerleri normal
             let hizAyari = (secilenKarakter === "Beril") ? 350 : 180;
-            
-            // Basılı tutulan yöne göre sürekli hız uygulama
-            player.body.setVelocityX(moveDir * hizAyari);
+            if (player && player.body && !player.scene.physics.world.isPaused) {
+                player.body.setVelocityX(moveDir * hizAyari);
+            }
 
-            // Canavar Yapay Zekası (Platform kenarından dönme)
             monsters.children.iterate((monster) => {
-                if (monster.body.blocked.left) monster.body.setVelocityX(60);
-                if (monster.body.blocked.right) monster.body.setVelocityX(-60);
+                if (monster.body && monster.body.blocked) {
+                    if (monster.body.blocked.left) monster.body.setVelocityX(60);
+                    if (monster.body.blocked.right) monster.body.setVelocityX(-60);
+                }
             });
         }
     </script>
