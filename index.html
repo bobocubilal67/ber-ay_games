@@ -312,14 +312,44 @@
                 if (playerLives < 3) { playerLives++; h.destroy(); livesText.setText('❤️ Canlar: ' + '❤️'.repeat(playerLives)); self.showFloatingText("+1 CAN!", 0x2ecc71); }
             });
 
+            // YENİLENEN CANAVAR ETKİLEŞİM KURALLARI (Tepesine Basma / Yok Etme)
             this.physics.add.overlap(player, monsters, (p, monster) => {
-                if (isInvulnerable) return;
                 if (isAbilityActive && secilenKarakter === "Bartu") return;
 
-                if (playerLives > 1) {
-                    playerLives--; livesText.setText('❤️ Canlar: ' + '❤️'.repeat(playerLives)); triggerInvulnerability(self);
+                // Oyuncunun canavarın tam üzerinde olup olmadığını dikey hızından ve konumundan kontrol ediyoruz
+                let isOnTop = (p.body.velocity.y > 0 && p.y < monster.y - 15);
+
+                if (isOnTop) {
+                    // Eğer canavar zaten hareketsiz/baygınsa (mavi renkliyse) -> YOK ET
+                    if (monster.isStunned) {
+                        monster.destroy();
+                        self.showFloatingText("YOK EDİLDİ! 💥", 0x2ecc71);
+                    } else {
+                        // Canavar ilk defa tepesine basılıyorsa -> HAREKETSİZ BIRAK
+                        monster.isStunned = true;
+                        monster.setFillStyle(0x3498db); // Rengini mavi yapıyoruz
+                        if (monster.body) {
+                            monster.body.setVelocityX(0);
+                            monster.body.setVelocityY(0);
+                        }
+                        self.showFloatingText("BAYILDI! 💤", 0xf1c40f);
+                    }
+                    // Oyuncuyu yukarı doğru hafifçe sektir
+                    p.body.setVelocityY(-220);
+                    meryemJumpCount = 1; // Meryem karakteriyse çift zıplama hakkı yenilensin
                 } else {
-                    gameOver(self, "Canavara yakalandın ve hiç kalbin kalmadı!");
+                    // Eğer tepeden değil de yandan/alttan çarparsa ve canavar baygın DEĞİLSE hasar ver
+                    if (!monster.isStunned) {
+                        if (isInvulnerable) return;
+
+                        if (playerLives > 1) {
+                            playerLives--; 
+                            livesText.setText('❤️ Canlar: ' + '❤️'.repeat(playerLives)); 
+                            triggerInvulnerability(self);
+                        } else {
+                            gameOver(self, "Canavara yakalandın ve hiç kalbin kalmadı!");
+                        }
+                    }
                 }
             });
 
@@ -337,8 +367,11 @@
         }
 
         function spawnMonster(scene, x, y) {
-            let m = scene.add.rectangle(x, y, 24, 24, 0xc0392b); monsters.add(m);
-            scene.physics.add.existing(m); m.body.setCollideWorldBounds(true);
+            let m = scene.add.rectangle(x, y, 24, 24, 0xc0392b); 
+            m.isStunned = false; // Başlangıçta canavar baygın değil
+            monsters.add(m);
+            scene.physics.add.existing(m); 
+            m.body.setCollideWorldBounds(true);
         }
 
         function triggerInvulnerability(scene) {
@@ -383,21 +416,25 @@
                 player.body.setVelocityX(moveDir * hizAyari);
             }
 
-            // AKILLI TAKİP VE ZIPLAMA SİSTEMİ (Normal Canavarlar)
+            // CANAVAR TAKİP MEKANİZMASI (Sadece bayılmamış canavarlar takip eder)
             if (!bossActive && monsters && monsters.children && (!isAbilityActive || secilenKarakter !== "Neriman")) {
                 monsters.children.iterate((m) => {
                     if (m && m.body && player) {
-                        // Yatayda oyuncuyu takip etme kararı
+                        // Eğer canavar baygınsa (isStunned ise) hareket etmesin
+                        if (m.isStunned) {
+                            m.body.setVelocityX(0);
+                            return;
+                        }
+
                         if (player.x > m.x) {
-                            m.body.setVelocityX(85); // Hız bir tık dengelendi
+                            m.body.setVelocityX(85);
                         } else {
                             m.body.setVelocityX(-85);
                         }
 
-                        // Önünde engel varsa (Duvar, platform veya dik eğim) otomatik zıplama tetikleme
                         if (m.body.blocked.left || m.body.blocked.right || (player.y < m.y - 35 && Phaser.Math.Between(0, 100) > 95)) {
                             if (m.body.blocked.down || m.body.touching.down) {
-                                m.body.setVelocityY(-340); // Küçük bir sıçrama ile engelleri aşar
+                                m.body.setVelocityY(-340);
                             }
                         }
                     }
@@ -410,8 +447,6 @@
                 let scene = player.scene;
                 
                 scene.cameras.main.stopFollow();
-                
-                // İSTEDİĞİNİZ ÖZELLİK: Tüm normal canavarlar anında siliniyor!
                 monsters.clear(true, true); 
 
                 let spawnCount = (currentLevel === 3) ? 2 : 1;
