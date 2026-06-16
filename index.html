@@ -101,7 +101,7 @@
         <h2 style="margin-bottom: 20px; font-size: 26px; color: #6c5ce7; text-shadow: 1px 1px 0px white;">Süper Kahramanını Seç! 🚀</h2>
         
         <button class="btn-char btn-beril" onclick="startGame('Beril')">😈 Beril (9 Yaş) - Kuromi / Şeker Yağmuru (8sn)</button>
-        <button class="btn-char btn-aybars" onclick="startGame('Aybars')">🍼 Aybars (2 Yaş) - Emekleyen Bebek / Mega Zıplama</button>
+        <button class="btn-char btn-aybars" onclick="startGame('Aybars')">🍼 Aybars (2 Yaş) - Ufaklık / Mega Zıplama</button>
         <button class="btn-char btn-neriman" onclick="startGame('Neriman')">❄️ Neriman (9 Yaş) - Buz Kraliçesi / Canavarları Dondur</button>
         <button class="btn-char btn-meryem" onclick="startGame('Meryem')">🛡️ Meryem (9 Yaş) - Zırhlı Şövalye / Çift Zıplama</button>
         <button class="btn-char btn-masal" onclick="startGame('Masal')">🎈 Masal (5 Yaş) - Balonlu Peri / Süzülerek Uçma</button>
@@ -283,12 +283,10 @@
             this.physics.world.setBounds(0, 0, 3200, 450); 
             this.cameras.main.setBounds(0, 0, 3200, 450);
 
-            // 🌈 EĞLENCELİ ÇOCUK ARKA PLANI (Gökyüzü Mavisi ve Tatlı Çizgi Film Bulutları)
             let bgGraphics = this.add.graphics();
-            bgGraphics.fillStyle(0xdff9fb, 1); // Açık tatlı gökyüzü mavisi
+            bgGraphics.fillStyle(0xdff9fb, 1); 
             bgGraphics.fillRect(0, 0, 3200, 450);
 
-            // Arka plana dekoratif sevimli beyaz bulutlar çiziliyor
             bgGraphics.fillStyle(0xffffff, 0.8);
             for (let b = 0; b < 25; b++) {
                 let bx = Phaser.Math.Between(50, 3100);
@@ -301,20 +299,16 @@
 
             platforms = this.physics.add.group({ allowGravity: false, immovable: true });
             
-            // Çimenlik Alan (Zemin)
             let ground = this.add.rectangle(1600, 435, 3200, 30, 0x2ecc71);
             platforms.add(ground);
 
-            // Dengeli ve takılmayı önleyen yükseklik sıralaması
             let platformHeights = [370, 310, 250, 190, 130, 340, 220, 160];
             
-            // 🛠️ TAKILMAYI ÖNLEYEN DÜZENLEME: 
-            // İlk platformun x konumunu 240'tan 320'ye kaydırdık. Böylece karakter rahatça sağa yürür.
             for (let i = 0; i < 45; i++) {
                 let x = 320 + (i * 75); 
                 let y = platformHeights[i % platformHeights.length];
                 let w = Phaser.Math.Between(70, 105);
-                let renk = (currentLevel === 1) ? 0xff7675 : (currentLevel === 2 ? 0x74b9ff : 0xa29bfe); // Daha pastel çocuk renkleri
+                let renk = (currentLevel === 1) ? 0xff7675 : (currentLevel === 2 ? 0x74b9ff : 0xa29bfe); 
                 let block = this.add.rectangle(x, y, w, 12, renk);
                 platforms.add(block);
                 
@@ -334,12 +328,10 @@
                 }
             }
 
-            // Karakter oluşturma
             player = this.add.container(100, 350);
             let pG = this.add.graphics();
 
             if (secilenKarakter === "Beril") {
-                // 😈 BERİL ARTIK KUROMI! 💜🖤
                 pG.fillStyle(0x2d142c, 1); 
                 pG.fillRoundedRect(-13, -2, 26, 24, 6);
                 pG.fillStyle(0xff75a0, 1);
@@ -362,11 +354,33 @@
                 pG.fillStyle(0xff75a0, 1); pG.fillCircle(0, -11, 1);
             } 
             else if (secilenKarakter === "Aybars") {
-                pG.fillStyle(0x2ecc71, 1); pG.fillRoundedRect(-18, 5, 34, 16, 6);
-                pG.fillStyle(0xffffff, 1); pG.fillCircle(-16, 8, 7);
-                pG.fillStyle(0xffdbac, 1); pG.fillCircle(10, 2, 11);
-                pG.fillStyle(0x4a2711, 1); pG.fillRect(8, -12, 3, 4);
-                pG.fillStyle(0x2c3e50, 1); pG.fillCircle(13, 0, 2);
+                // 🍼 YENİ SEVİMLİ VE MİNİK AYBARS (Emekleme İptal, Ayakta ve Şirin!)
+                // Mavi Bere ve Ponpon
+                pG.fillStyle(0x74b9ff, 1);
+                pG.fillCircle(0, -26, 4); // Berenin ponponu
+                pG.fillRoundedRect(-10, -23, 20, 12, 4); // Bere gövdesi
+                
+                // Kafa ve Sevimli Yüz
+                pG.fillStyle(0xffdbac, 1);
+                pG.fillCircle(0, -10, 10); // Kafa
+                pG.fillStyle(0xff7675, 0.6);
+                pG.fillCircle(-6, -8, 2.5); pG.fillCircle(6, -8, 2.5); // Pembe yanaklar
+                pG.fillStyle(0x2c3e50, 1);
+                pG.fillCircle(-4, -11, 2.5); pG.fillCircle(4, -11, 2.5); // Büyük şirin gözler
+                pG.fillStyle(0xffffff, 1);
+                pG.fillCircle(-4.5, -12, 0.8); pG.fillCircle(3.5, -12, 0.8); // Göz parıltısı
+                
+                // Gövde ve Kırmızı Şort
+                pG.fillStyle(0xffffff, 1);
+                pG.fillRoundedRect(-8, 0, 16, 12, 3); // Tişört
+                pG.fillStyle(0xff7675, 1);
+                pG.fillRoundedRect(-8, 8, 16, 8, 2); // Kırmızı Şort
+                
+                // Küçük Ayaklar
+                pG.fillStyle(0xffdbac, 1);
+                pG.fillRect(-6, 16, 4, 4); pG.fillRect(2, 16, 4, 4);
+                pG.fillStyle(0xffffff, 1);
+                pG.fillCircle(-4, 20, 3); pG.fillCircle(4, 20, 3); // Minik patikler
             } 
             else if (secilenKarakter === "Neriman") {
                 pG.fillStyle(0x74b9ff, 1); pG.fillTriangle(0, -5, -15, 24, 15, 24);
@@ -405,13 +419,14 @@
             } else if(secilenKarakter !== "Aybars" && secilenKarakter !== "Bartu") {
                 pG.lineStyle(2, 0xe74c3c, 1); pG.beginPath(); pG.arc(0, -9, 3, 0, Math.PI, false); pG.strokePath();
             } else if (secilenKarakter === "Aybars") {
-                pG.lineStyle(1.5, 0xe74c3c, 1); pG.beginPath(); pG.arc(12, 4, 2, 0, Math.PI, false); pG.strokePath();
+                // Aybars için minik bir tebessüm çiziyoruz
+                pG.lineStyle(1.5, 0xe74c3c, 1); pG.beginPath(); pG.arc(0, -6, 2, 0, Math.PI, false); pG.strokePath();
             }
 
             player.add(pG);
             this.physics.add.existing(player);
             
-            // 🛠️ COK DAHA RAHAT HAREKET İÇİN HİTBOX BOYUTU 38 PİKSELE DÜŞÜRÜLDÜ
+            // Aybars da artık ayakta durduğu için ideal kutu boyutlarına sahip
             player.body.setSize(24, 38);
             player.body.setOffset(-12, -15);
             player.body.setCollideWorldBounds(true);
@@ -489,7 +504,6 @@
             });
 
             let levelLabel = (currentLevel === 3) ? "3 (FİNAL)" : currentLevel;
-            // Metin renkleri açık arka plana uyması için koyu yapıldı
             infoText = this.add.text(15, 15, 'Kahraman: ' + secilenKarakter + ' | Bölüm: ' + levelLabel, { fontSize: '15px', color: '#2c3e50', fontWeight: 'bold' }).setScrollFactor(0).setDepth(100);
             livesText = this.add.text(15, 40, '❤️ Canlar: ❤️', { fontSize: '15px', color: '#e74c3c', fontWeight: 'bold' }).setScrollFactor(0).setDepth(100);
             
