@@ -15,9 +15,75 @@
             color: #2c3e50;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             min-height: 100vh; overflow: hidden;
+            position: relative;
         }
 
-        /* ================= KUTU İÇİ FESTİVAL ALANI (PANORAMA) ================= */
+        /* ================= MAVİ ALANI DOLDURAN ARKA PLAN SÜSLERİ ================= */
+        .bg-decor { position: absolute; pointer-events: none; z-index: 1; }
+        
+        /* Bulutlar */
+        .cloud { background: #fff; border-radius: 20px; opacity: 0.85; filter: blur(1px); }
+        .cloud::before, .cloud::after { content: ''; position: absolute; background: #fff; border-radius: 50%; }
+        
+        .c1 { width: 80px; height: 30px; top: 10%; left: 8%; }
+        .c1::before { width: 40px; height: 40px; top: -20px; left: 15px; }
+        .c1::after { width: 30px; height: 30px; top: -15px; left: 45px; }
+
+        .c2 { width: 100px; height: 35px; top: 25%; right: 7%; }
+        .c2::before { width: 50px; height: 50px; top: -25px; left: 20px; }
+        .c2::after { width: 40px; height: 40px; top: -15px; left: 50px; }
+
+        .c3 { width: 70px; height: 25px; bottom: 15%; left: 10%; opacity: 0.7; }
+        .c3::before { width: 30px; height: 30px; top: -15px; left: 12px; }
+
+        .c4 { width: 90px; height: 30px; bottom: 20%; right: 12%; opacity: 0.7; }
+        .c4::before { width: 45px; height: 45px; top: -20px; left: 20px; }
+
+        /* Uçan Balonlar */
+        .balloon { width: 30px; height: 36px; border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%; position: absolute; }
+        .balloon::after { content: ''; position: absolute; bottom: -8px; left: 14px; width: 2px; height: 10px; background: #95a5a6; }
+        
+        .b1 { background: #ff7675; top: 15%; left: 25%; transform: rotate(-10deg); }
+        .b2 { background: #74b9ff; top: 40%; left: 6%; transform: rotate(15deg); width: 25px; height: 30px; }
+        .b3 { background: #ffeaa7; top: 18%; right: 28%; transform: rotate(5deg); }
+        .b4 { background: #a29bfe; top: 55%; right: 8%; transform: rotate(-12deg); width: 32px; height: 38px; }
+        .b5 { background: #55efc4; bottom: 10%; left: 28%; transform: rotate(8deg); }
+        .b6 { background: #ff85a2; bottom: 12%; right: 30%; transform: rotate(-5deg); }
+
+        /* Parlayan Yıldızlar */
+        .star { background: #fff; width: 12px; height: 12px; clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%); opacity: 0.9; animation: pulse 2s infinite alternate; }
+        .s1 { top: 5%; left: 50%; width: 16px; height: 16px; }
+        .s2 { top: 32%; left: 15%; }
+        .s3 { top: 8%; right: 18%; }
+        .s4 { top: 48%; right: 22%; width: 14px; height: 14px; }
+        .s5 { bottom: 28%; left: 20%; }
+        .s6 { bottom: 5%; right: 45%; }
+
+        /* Havada Uçuşan Küçük Yuvarlak Şekerler */
+        .bg-candy { width: 14px; height: 14px; border-radius: 50%; opacity: 0.8; }
+        .bc1 { background: #fd79a8; top: 22%; left: 18%; }
+        .bc2 { background: #ffeaa7; top: 65%; left: 14%; }
+        .bc3 { background: #e17055; top: 12%; right: 12%; }
+        .bc4 { background: #55efc4; bottom: 25%; right: 18%; }
+
+        @keyframes pulse { 0% { transform: scale(0.8); opacity: 0.5; } 100% { transform: scale(1.2); opacity: 1; } }
+
+        /* ================= ANA SEÇİM KUTUSU ================= */
+        #char-selection { 
+            text-align: center; 
+            padding: 20px; 
+            max-width: 480px; 
+            width: 92%; 
+            background: rgba(255, 255, 255, 0.97);
+            border-radius: 24px;
+            box-shadow: 0 20px 45px rgba(0,0,0,0.2);
+            border: 4px dashed #ff7675;
+            backdrop-filter: blur(10px);
+            position: relative;
+            z-index: 10; /* Arka plan süslerinin üstünde kalması için */
+        }
+
+        /* ================= KUTU İÇİ FESTİVAL ALANI ================= */
         .festival-banner {
             position: relative;
             width: 100%;
@@ -99,19 +165,6 @@
         .mh-meryem { background: #7f8c8d; border-radius: 4px 4px 0 0; border-top: 5px solid #bdc3c7; }
         .mh-masal { background: #ff85a2; border-radius: 6px 6px 0 0; border-top: 4px solid #2c3e50; }
         .mh-bartu { background: #6c5ce7; border-radius: 4px 4px 0 0; opacity: 0.8; border-top: 5px solid #341f97; }
-
-        /* ================= ANA SEÇİM KUTUSU ================= */
-        #char-selection { 
-            text-align: center; 
-            padding: 20px; 
-            max-width: 480px; 
-            width: 92%; 
-            background: rgba(255, 255, 255, 0.96);
-            border-radius: 24px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.18);
-            border: 4px dashed #ff7675;
-            backdrop-filter: blur(10px);
-        }
         
         .btn-char {
             color: #2c3e50; 
@@ -142,7 +195,7 @@
             box-shadow: 0 1px 0 transparent;
         }
         
-        #game-wrapper { display: none; position: relative; width: 100vw; height: 100vh; max-width: 800px; max-height: 600px; }
+        #game-wrapper { display: none; position: relative; width: 100vw; height: 100vh; max-width: 800px; max-height: 600px; z-index: 20; }
         #game-container { width: 100%; height: 70%; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
         
         .mobile-controls {
@@ -180,10 +233,37 @@
 </head>
 <body>
 
+    <!-- ================= ARKA PLAN SÜSLERİ (MAVİ ALANI DOLDURANLAR) ================= -->
+    <div class="bg-decor cloud c1"></div>
+    <div class="bg-decor cloud c2"></div>
+    <div class="bg-decor cloud c3"></div>
+    <div class="bg-decor cloud c4"></div>
+
+    <div class="bg-decor balloon b1"></div>
+    <div class="bg-decor balloon b2"></div>
+    <div class="bg-decor balloon b3"></div>
+    <div class="bg-decor balloon b4"></div>
+    <div class="bg-decor balloon b5"></div>
+    <div class="bg-decor balloon b6"></div>
+
+    <div class="bg-decor star s1"></div>
+    <div class="bg-decor star s2"></div>
+    <div class="bg-decor star s3"></div>
+    <div class="bg-decor star s4"></div>
+    <div class="bg-decor star s5"></div>
+    <div class="bg-decor star s6"></div>
+
+    <div class="bg-decor bg-candy bc1"></div>
+    <div class="bg-decor bg-candy bc2"></div>
+    <div class="bg-decor bg-candy bc3"></div>
+    <div class="bg-decor bg-candy bc4"></div>
+
+    <!-- ================= ANA SEÇİM KUTUSU ================= -->
     <div id="char-selection">
         <div class="signature-top">✨ Designed by DtBY ✨</div>
         <h2 style="margin-bottom: 10px; font-size: 24px; color: #6c5ce7; text-shadow: 1px 1px 0px white;">Süper Kahramanını Seç! 🚀</h2>
         
+        <!-- 🎪 KUTU İÇİ PANORAMİK FESTİVAL AFİŞİ -->
         <div class="festival-banner">
             <div class="lighthouse"></div>
             <div class="lighthouse-top"></div>
@@ -224,6 +304,7 @@
         <div style="margin-top:15px; font-size:12px; color:#636e72; font-weight: bold;">Bilal Yıldırım tarafından yapılmıştır. 🌟</div>
     </div>
 
+    <!-- ================= OYUN ALANI ================= -->
     <div id="game-wrapper">
         <div id="game-over-screen">
             <h2 id="end-title">OYUN BİTTİ</h2>
