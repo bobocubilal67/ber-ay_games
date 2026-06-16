@@ -100,7 +100,6 @@
         <div class="signature-top">✨ Designed by DtBY ✨</div>
         <h2 style="margin-bottom: 20px; font-size: 26px; color: #6c5ce7; text-shadow: 1px 1px 0px white;">Süper Kahramanını Seç! 🚀</h2>
         
-        <!-- Beril'in yeni gücü butona yazıldı -->
         <button class="btn-char btn-beril" onclick="startGame('Beril')">🍭 Beril (9 Yaş) - Şeker Yağmuru (8sn)</button>
         <button class="btn-char btn-aybars" onclick="startGame('Aybars')">🦘 Aybars (2 Yaş) - Mega Zıplama (Pasif)</button>
         <button class="btn-char btn-neriman" onclick="startGame('Neriman')">❄️ Neriman (9 Yaş) - Canavarları Dondur (15sn)</button>
@@ -155,7 +154,6 @@
             document.getElementById('game-over-screen').style.display = 'none';
             
             const abBtn = document.getElementById('btnAbility');
-            // Beril artık aktif bir güce sahip olduğu için butonunu gizlemiyoruz!
             if(secilenKarakter !== "Aybars" && secilenKarakter !== "Meryem") {
                 abBtn.style.display = "flex"; abBtn.style.opacity = "1";
             } else { abBtn.style.display = "none"; }
@@ -214,7 +212,6 @@
 
             let activeScene = gameInstance.scene.scenes[0];
             
-            // Beril için 8 saniye, Bartu için 10 saniye, diğerleri için 15 saniye sürer
             if (secilenKarakter === "Beril") specialAbilityTimer = 8;
             else if (secilenKarakter === "Bartu") specialAbilityTimer = 10;
             else specialAbilityTimer = 15;
@@ -223,9 +220,8 @@
                 activeScene.showFloatingText("ŞEKER YAĞMURU BAŞLADI! 🍭", 0xff477e);
                 monsters.children.iterate((m) => { 
                     if(m && m.body) {
-                        m.isCandy = true; // Şeker modunu aç
-                        m.setFillStyle(0xff85a2); // Pembe yap
-                        m.setStrokeStyle(2, 0xffffffff); // Kenarlık ekle
+                        m.isCandy = true;
+                        redrawMonsterGraphics(m); // Şekere dönüştürerek yeniden çiz
                     } 
                 });
             } else if (secilenKarakter === "Neriman") {
@@ -262,14 +258,10 @@
                 activeScene.physics.world.gravity.y = 800; 
                 if(player) player.setAlpha(1); 
                 
-                // Beril'in gücü bitince hayatta kalan şekerleri geri canavara çevir
                 monsters.children.iterate((m) => { 
                     if(m && m.body) {
                         m.isCandy = false;
-                        if(!m.isStunned) {
-                            m.setFillStyle(0xc0392b);
-                            m.setStrokeStyle(0, 0x000000);
-                        }
+                        redrawMonsterGraphics(m); // Canavara geri döndürerek yeniden çiz
                     } 
                 });
 
@@ -346,8 +338,34 @@
                 }
             }
 
-            player = this.add.rectangle(100, 350, 32, 45, 0x9b59b6);
+            // 🧒 KÜP YERİNE SEVİMLİ ÇOCUK KAHRAMAN ÇİZİMİ
+            player = this.add.container(100, 350);
+            let pGraphics = this.add.graphics();
+            // Gövde (Giysi)
+            pGraphics.fillStyle(0x9b59b6, 1);
+            pGraphics.fillRoundedRect(-16, -10, 32, 35, 8);
+            // Kafa / Yüz
+            pGraphics.fillStyle(0xffdbac, 1);
+            pGraphics.fillCircle(0, -22, 14);
+            // Saçlar
+            pGraphics.fillStyle(0x4a2711, 1);
+            pGraphics.fillCircle(-6, -32, 7);
+            pGraphics.fillCircle(6, -32, 7);
+            pGraphics.fillCircle(0, -30, 10);
+            // Gözler
+            pGraphics.fillStyle(0x2c3e50, 1);
+            pGraphics.fillCircle(-5, -24, 2.5);
+            pGraphics.fillCircle(5, -24, 2.5);
+            // Gülümseme
+            pGraphics.lineStyle(2, 0xe74c3c, 1);
+            pGraphics.beginPath();
+            pGraphics.arc(0, -18, 4, 0, Math.PI, false);
+            pGraphics.strokePath();
+
+            player.add(pGraphics);
             this.physics.add.existing(player);
+            player.body.setSize(32, 55);
+            player.body.setOffset(-16, -35);
             player.body.setCollideWorldBounds(true);
             this.cameras.main.startFollow(player, true, 0.1, 0.1); 
 
@@ -381,14 +399,13 @@
             this.physics.add.overlap(player, monsters, (p, monster) => {
                 if (isAbilityActive && secilenKarakter === "Bartu") return;
 
-                // 🍬 BERİL'İN ŞEKER ETKİLEŞİM KURALI: Canavarlar şeker modundaysa nereden değerse değsin toplanır!
                 if (monster.isCandy) {
                     monster.destroy();
                     self.showFloatingText("ŞEKER KAPALDI! 🍬", 0xff477e);
                     return;
                 }
 
-                let isOnTop = (p.body.velocity.y >= -50 && p.y < monster.y - 8);
+                let isOnTop = (p.body.velocity.y >= -50 && p.y < monster.y - 12);
 
                 if (isOnTop) {
                     if (monster.touchCount === 1) {
@@ -399,12 +416,12 @@
                     } else if (!monster.isStunned) {
                         monster.isStunned = true;
                         monster.touchCount = 1; 
-                        monster.setFillStyle(0x3498db); 
+                        redrawMonsterGraphics(monster); // Grafik durumunu baygın yap ve tekrar çiz
                         
                         if (monster.body) {
                             monster.body.setVelocityX(0);
                             monster.body.setVelocityY(0);
-                            monster.body.setSize(14, 8);
+                            monster.body.setSize(30, 12);
                         }
                         
                         self.showFloatingText("BAYILDI! 💤", 0xf1c40f);
@@ -433,27 +450,75 @@
             bossText = this.add.text(400, 60, '', { fontSize: '20px', color: '#f1c40f', fontWeight: 'bold', backgroundColor: '#000000', padding: 5 }).setOrigin(0.5).setScrollFactor(0).setDepth(101);
 
             this.showFloatingText = function(text, color) {
-                let txt = self.add.text(player.x - 40, player.y - 50, text, { fontSize: '14px', color: Phaser.Display.Color.IntegerToColor(color).rgba, fontWeight:'bold' }).setDepth(99);
+                let txt = self.add.text(player.x - 40, player.y - 70, text, { fontSize: '14px', color: Phaser.Display.Color.IntegerToColor(color).rgba, fontWeight:'bold' }).setDepth(99);
                 self.tweens.add({ targets: txt, y: txt.y - 50, alpha: 0, duration: 1200, onComplete: () => { if(txt) txt.destroy(); } });
             };
         }
 
+        // 👾 DİNAMİK CANAVAR GRAFİK ÇİZİCİ (Normal, Baygın ve Şeker Modları)
+        function redrawMonsterGraphics(m) {
+            let g = m.first; // Container içindeki ilk grafik objesini al
+            g.clear();
+
+            if (m.isCandy) {
+                // 🍭 ŞEKER MODU (Lolipop Çizimi)
+                g.fillStyle(0xffffff, 1);
+                g.fillRect(-2, 0, 4, 18); // Şeker sapı
+                g.fillStyle(0xff85a2, 1);
+                g.fillCircle(0, -6, 12); // Lolipop gövdesi
+                g.lineStyle(2, 0xff477e, 1);
+                g.beginPath(); g.arc(0, -6, 7, 0, Math.PI * 2); g.strokePath(); // İç sarmal halkası
+            } else if (m.isStunned) {
+                // 💤 BAYGIN MODU (Gözleri Kapalı Uyuyan Mavi Canavar)
+                g.fillStyle(0x3498db, 1);
+                g.fillRoundedRect(-14, -8, 28, 16, 6);
+                // Kapalı Gözler (Zz çizgileri gibi düz çizgi)
+                g.lineStyle(2, 0x2c3e50, 1);
+                g.lineBetween(-6, -2, -2, -2);
+                g.lineBetween(2, -2, 6, -2);
+            } else {
+                // 👹 NORMAL CANAVAR MODU (Tek Gözlü Sevimli Kızgın Canavar)
+                g.fillStyle(0xc0392b, 1);
+                g.fillRoundedRect(-14, -14, 28, 28, 8); // Gövde
+                // Kocaman Tek Göz Beyazı
+                g.fillStyle(0xffffff, 1);
+                g.fillCircle(0, -2, 8);
+                // Göz Bebeği
+                g.fillStyle(0x2c3e50, 1);
+                g.fillCircle(0, -2, 3.5);
+                // Kızgın Kaşlar
+                g.lineStyle(2, 0x000000, 1);
+                g.lineBetween(-9, -10, -1, -7);
+                g.lineBetween(1, -7, 9, -10);
+                // Küçük Dişler
+                g.fillStyle(0xffffff, 1);
+                g.fillTriangle(-6, 8, -2, 8, -4, 12);
+                g.fillTriangle(2, 8, 6, 8, 4, 12);
+            }
+        }
+
         function spawnMonster(scene, x, y) {
             monsterCounter++;
-            let m = scene.add.rectangle(x, y, 24, 24, 0xc0392b); 
+            let m = scene.add.container(x, y);
+            let mGraphics = scene.add.graphics();
+            m.add(mGraphics);
+
             m.canavarKimligi = monsterCounter; 
             m.isStunned = false; 
             m.touchCount = 0; 
-            m.isCandy = false; // Yeni canavarlar şeker modunda başlamaz
+            m.isCandy = false; 
+
+            redrawMonsterGraphics(m); // İlk çizim tetiklenir
+
             monsters.add(m);
             scene.physics.add.existing(m); 
+            m.body.setSize(28, 28);
+            m.body.setOffset(-14, -14);
             m.body.setCollideWorldBounds(true);
             
-            // Eğer Beril şeker yağmurunu zaten açmışken yeni canavar doğarsa onu da şeker yap
             if (isAbilityActive && secilenKarakter === "Beril") {
                 m.isCandy = true;
-                m.setFillStyle(0xff85a2);
-                m.setStrokeStyle(2, 0xffffffff);
+                redrawMonsterGraphics(m);
             }
         }
 
@@ -494,7 +559,6 @@
         }
 
         function update() {
-            // Beril şeker toplama heyecanını yaşasın diye normal hızı biraz yüksek tutuldu (240)
             let hizAyari = (secilenKarakter === "Beril") ? 240 : 190;
             if (player && player.body && !player.scene.physics.world.isPaused) {
                 player.body.setVelocityX(moveDir * hizAyari);
@@ -533,9 +597,28 @@
                 let spawnCount = (currentLevel === 3) ? 2 : 1;
                 
                 for(let b=0; b < spawnCount; b++) {
-                    let bossItem = scene.add.rectangle(player.x + 200 + (b * 70), 150, 45, 60, 0x2c3e50);
+                    // 👿 KÜP YERİNE DEV BOSS (GÖLGE CANAVARI) ÇİZİMİ
+                    let bossItem = scene.add.container(player.x + 200 + (b * 70), 150);
+                    let bG = scene.add.graphics();
+                    // Dev Gövde
+                    bG.fillStyle(0x2c3e50, 1);
+                    bG.fillRoundedRect(-25, -35, 50, 70, 15);
+                    // Korkunç Parlayan Sarı Gözler
+                    bG.fillStyle(0xf1c40f, 1);
+                    bG.fillCircle(-10, -10, 6);
+                    bG.fillCircle(10, -10, 6);
+                    bG.fillStyle(0x000000, 1);
+                    bG.fillCircle(-10, -10, 2);
+                    bG.fillCircle(10, -10, 2);
+                    // Büyük Ağız ve Keskin Dişler
+                    bG.fillStyle(0xc0392b, 1);
+                    bG.fillRect(-15, 10, 30, 10);
+                    
+                    bossItem.add(bG);
                     bosses.add(bossItem);
                     scene.physics.add.existing(bossItem);
+                    bossItem.body.setSize(50, 70);
+                    bossItem.body.setOffset(-25, -35);
                     bossItem.body.setCollideWorldBounds(true);
                     bossItem.body.setBounce(0.3);
                     
