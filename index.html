@@ -68,7 +68,7 @@
         <button class="btn-char" onclick="startGame('Neriman')">❄️ Neriman (9 Yaş) - Canavarları Dondur</button>
         <button class="btn-char" onclick="startGame('Meryem')">🛡️ Meryem (9 Yaş) - Koruma Kalkanı (15sn)</button>
         <button class="btn-char" onclick="startGame('Masal')">🎈 Masal (5 Yaş) - Süzülerek Uçma</button>
-        <button class="btn-char" onclick="startGame('Bartu')">💥 Bartu (9 Yaş) - Canavar İteleme</button>
+        <button class="btn-char" onclick="startGame('Bartu')">💥 Bartu (9 Yaş) - Canavar İteleme (15sn)</button>
         <div style="margin-top:25px; font-size:13px; color:#ccc; font-weight: bold;">Bilal Yıldırım tarafından yapılmıştır.</div>
     </div>
 
@@ -103,6 +103,7 @@
         function startGame(karakterIsmi) {
             secilenKarakter = karakterIsmi; playerLives = 1; isInvulnerable = false; isAbilityActive = false;
             bossActive = false; bossTimer = 30;
+            moveDir = 0;
             
             document.getElementById('char-selection').style.display = 'none';
             document.getElementById('game-wrapper').style.display = 'block';
@@ -131,7 +132,7 @@
         function setupMobileControls() {
             document.getElementById('btnLeft').onpointerdown = () => { moveDir = -1; };
             document.getElementById('btnLeft').onpointerup = () => { moveDir = 0; };
-            document.getElementById('btnRight').onpointerdown = () => { moveDir = -1; moveDir = 1; };
+            document.getElementById('btnRight').onpointerdown = () => { moveDir = 1; };
             document.getElementById('btnRight').onpointerup = () => { moveDir = 0; };
             document.getElementById('btnJump').onpointerdown = () => { makePlayerJump(); };
             document.getElementById('btnAbility').onpointerdown = () => { triggerSpecialAbility(); };
@@ -139,7 +140,6 @@
 
         function makePlayerJump() {
             if (player && player.body && player.body.touching.down) {
-                // Sıkışmayı önlemek için tüm karakterlerin zıplama gücünü ideal bant aralığına (-380) çektim.
                 let gravityFactor = (isAbilityActive && secilenKarakter === "Masal") ? -220 : -380;
                 let ziplamaGucu = (secilenKarakter === "Aybars") ? -580 : gravityFactor;
                 player.body.setVelocityY(ziplamaGucu);
@@ -161,10 +161,10 @@
             } else if (secilenKarakter === "Masal") {
                 activeScene.physics.world.gravity.y = 250; 
             } else if (secilenKarakter === "Bartu") {
-                player.setTint(0xe67e22); // İteleme modunda turuncu parlar
+                player.setTint(0xe67e22); 
             }
 
-            // 15 SANİYE SINIRI KESİN ÇÖZÜMÜ
+            // ⏰ 15 SANİYE SINIRI SÜRESİ (KESİN ÇÖZÜM)
             abilityTimerEvent = activeScene.time.delayedCall(15000, () => {
                 isAbilityActive = false;
                 document.getElementById('btnAbility').style.opacity = "1";
@@ -189,41 +189,36 @@
 
         function create() {
             let self = this;
-            this.physics.world.setBounds(0, 0, 3200, 450); // Genişletilmiş ilerlemeli dünya sınırı
+            this.physics.world.setBounds(0, 0, 3200, 450); 
             this.cameras.main.setBounds(0, 0, 3200, 450);
 
-            // Arka Plan Çizgileri
             for (let i = 0; i < 3200; i += 400) {
                 this.add.grid(i + 200, 225, 400, 450, 40, 40, 0x34495e, 0.3, 0x2c3e50, 0.5);
             }
 
             platforms = this.physics.add.staticGroup();
             
-            // 🧱 9 SIRA BANT (İdeal tırmanma ve ilerleme yükseklikleri)
             let ground = this.add.rectangle(1600, 435, 3200, 30, 0x27ae60);
             platforms.add(ground);
 
             let platformHeights = [370, 310, 250, 190, 130, 340, 220, 160];
-            for (let i = 0; i < 40; i++) {
-                let x = 200 + (i * 70); // Yatayda yakın sıralı bantlar
+            for (let i = 0; i < 45; i++) {
+                let x = 200 + (i * 65); 
                 let y = platformHeights[i % platformHeights.length];
                 let w = Phaser.Math.Between(80, 130);
                 platforms.add(this.add.rectangle(x, y, w, 14, 0xe67e22));
             }
 
-            // Oyuncu
             player = this.add.rectangle(100, 350, 32, 45, 0x9b59b6);
             this.physics.add.existing(player);
             player.body.setCollideWorldBounds(true);
-            this.cameras.main.startFollow(player, true, 0.1, 0.1); // Ekran İlerleme Kamerası
+            this.cameras.main.startFollow(player, true, 0.1, 0.1); 
 
-            // Normal Canavarlar
             monsters = this.physics.add.group();
             for(let m = 0; m < 15; m++) {
                 spawnMonster(this, Phaser.Math.Between(400, 2400), Phaser.Math.Between(100, 350));
             }
 
-            // Kalpler
             hearts = this.physics.add.group();
             this.time.addEvent({
                 delay: Phaser.Math.Between(4000, 8000),
@@ -235,7 +230,6 @@
                 }, loop: true
             });
 
-            // Fizik Kuralları
             this.physics.add.collider(player, platforms);
             this.physics.add.collider(monsters, platforms);
             
@@ -243,16 +237,17 @@
                 if (playerLives < 3) { playerLives++; h.destroy(); livesText.setText('❤️ Canlar: ' + '❤️'.repeat(playerLives)); self.showFloatingText("+1 CAN!", 0x2ecc71); }
             });
 
-            // 💥 CANAVAR ETKİLEŞİMİ (BARTU İTELEME GÜCÜ DAHİL)
             this.physics.add.overlap(player, monsters, (p, monster) => {
                 if (isInvulnerable) return;
+                
+                // Meryem Kalkan Kontrolü (Sadece 15 saniye aktifken korur)
                 if (isAbilityActive && secilenKarakter === "Meryem") return;
                 
+                // Bartu İteleme Gücü Kontrolü (Sadece 15 saniye aktifken iteler)
                 if (isAbilityActive && secilenKarakter === "Bartu") {
-                    // Bartu'nun özel gücü: Canavarı fırlatıp iteleme
-                    let yon = (monster.x > player.x) ? 350 : -350;
+                    let yon = (monster.x > player.x) ? 380 : -380;
                     monster.body.setVelocityX(yon);
-                    monster.body.setVelocityY(-200);
+                    monster.body.setVelocityY(-220);
                     self.showFloatingText("İTELENDİ! 💥", 0xe67e22);
                     return;
                 }
@@ -264,13 +259,14 @@
                 }
             });
 
-            // Arayüz Yazıları (Kameraya sabitlendi)
-            infoText = this.add.text(15, 15, 'Kahraman: ' + secilenKarakter, { fontSize: '15px', color: '#fff', fontWeight: 'bold' }).setScrollFactor(0);
-            livesText = this.add.text(15, 40, '❤️ Canlar: ❤️', { fontSize: '15px', color: '#e74c3c', fontWeight: 'bold' }).setScrollFactor(0);
-            bossText = this.add.text(400, 30, '', { fontSize: '24px', color: '#f1c40f', fontWeight: 'bold' }).setOrigin(0.5).setScrollFactor(0);
+            infoText = this.add.text(15, 15, 'Kahraman: ' + secilenKarakter, { fontSize: '15px', color: '#fff', fontWeight: 'bold' }).setScrollFactor(0).setDepth(100);
+            livesText = this.add.text(15, 40, '❤️ Canlar: ❤️', { fontSize: '15px', color: '#e74c3c', fontWeight: 'bold' }).setScrollFactor(0).setDepth(100);
+            
+            // 🕒 SAAT GÖSTERGESİ ÖN PLANA ALINDI (setDepth ve setScrollFactor eklendi)
+            bossText = this.add.text(400, 30, '', { fontSize: '20px', color: '#f1c40f', fontWeight: 'bold', backgroundColor: '#000000', padding: 5 }).setOrigin(0.5).setScrollFactor(0).setDepth(100);
 
             this.showFloatingText = function(text, color) {
-                let txt = self.add.text(player.x - 40, player.y - 50, text, { fontSize: '14px', color: Phaser.Display.Color.IntegerToColor(color).rgba, fontWeight:'bold' });
+                let txt = self.add.text(player.x - 40, player.y - 50, text, { fontSize: '14px', color: Phaser.Display.Color.IntegerToColor(color).rgba, fontWeight:'bold' }).setDepth(99);
                 self.tweens.add({ targets: txt, y: txt.y - 50, alpha: 0, duration: 1200, onComplete: () => { if(txt) txt.destroy(); } });
             };
         }
@@ -303,17 +299,14 @@
                 player.body.setVelocityX(moveDir * hizAyari);
             }
 
-            // 👹 BOSS MODU TETİKLEYİCİSİ (10 Ekran boyutu ilerleyince -> x: 2500)
             if (player.x > 2500 && !bossActive) {
                 bossActive = true;
                 let scene = player.scene;
                 
-                // Kamerayı kilitle ve canavarları temizle
                 scene.cameras.main.stopFollow();
                 monsters.clear(true, true);
 
-                // Büyük Boss Oluştur
-                boss = scene.add.rectangle(player.x + 250, 250, 70, 90, 0x2c3e50);
+                boss = scene.add.rectangle(player.x + 250, 220, 70, 90, 0x2c3e50);
                 scene.physics.add.existing(boss);
                 boss.body.setCollideWorldBounds(false).setAllowGravity(false);
                 
@@ -323,31 +316,30 @@
                     }
                 });
 
-                // Boss Saldırı Mekaniği (Oyuncuya doğru yavaşça süzülür)
                 scene.time.addEvent({
                     delay: 1000, loop: true,
                     callback: () => {
                         if (boss && boss.body) {
                             let angle = Phaser.Math.Angle.Between(boss.x, boss.y, player.x, player.y);
-                            scene.physics.velocityFromRotation(angle, 120, boss.body.velocity);
+                            scene.physics.velocityFromRotation(angle, 130, boss.body.velocity);
                         }
                     }
                 });
 
-                // 30 Saniye Hayatta Kalma Sayacı
+                // Geri sayım başlatılıyor ve yazı ekrana yazdırılıyor
+                bossText.setText('BOSS SAVAŞI! KALAN SÜRE: ' + bossTimer + 'sn');
                 bossTimerEvent = scene.time.addEvent({
                     delay: 1000, loop: true,
                     callback: () => {
                         bossTimer--;
                         bossText.setText('BOSS SAVAŞI! KALAN SÜRE: ' + bossTimer + 'sn');
                         if (bossTimer <= 0) {
-                            gameOver(scene, "30 saniye hayatta kalmayı başardın, Bilal Yıldırım sunar!", "TEBRİKLER!");
+                            gameOver(scene, "30 saniye boyunca hayatta kalmayı başardın!", "TEBRİKLER!");
                         }
                     }
                 });
             }
 
-            // Normal canavarların sınırlardan dönme yapay zekası
             if (!isAbilityActive || secilenKarakter !== "Neriman") {
                 if (monsters && monsters.children) {
                     monsters.children.iterate((m) => {
