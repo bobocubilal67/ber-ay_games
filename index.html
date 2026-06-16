@@ -46,7 +46,7 @@
             text-shadow: 1px 1px 0px rgba(255,255,255,0.5);
         }
 
-        .btn-beril { background: #ffeaa7; border: 3px solid #fdcb6e; box-shadow: 0 5px 0 #f1c40f; }
+        .btn-beril { background: #efe5ff; border: 3px solid #b38bff; box-shadow: 0 5px 0 #9b62ff; color: #4a154b; }
         .btn-aybars { background: #fab1a0; border: 3px solid #ff7675; box-shadow: 0 5px 0 #e17055; }
         .btn-neriman { background: #dfe6e9; border: 3px solid #b2bec3; box-shadow: 0 5px 0 #636e72; }
         .btn-meryem { background: #74b9ff; border: 3px solid #0984e3; box-shadow: 0 5px 0 #74b9ff; }
@@ -100,7 +100,7 @@
         <div class="signature-top">✨ Designed by DtBY ✨</div>
         <h2 style="margin-bottom: 20px; font-size: 26px; color: #6c5ce7; text-shadow: 1px 1px 0px white;">Süper Kahramanını Seç! 🚀</h2>
         
-        <button class="btn-char btn-beril" onclick="startGame('Beril')">⚡ Beril (9 Yaş) - Şimşek Çocuk / Şeker Yağmuru</button>
+        <button class="btn-char btn-beril" onclick="startGame('Beril')">😈 Beril (9 Yaş) - Kuromi / Şeker Yağmuru (8sn)</button>
         <button class="btn-char btn-aybars" onclick="startGame('Aybars')">🍼 Aybars (2 Yaş) - Emekleyen Bebek / Mega Zıplama</button>
         <button class="btn-char btn-neriman" onclick="startGame('Neriman')">❄️ Neriman (9 Yaş) - Buz Kraliçesi / Canavarları Dondur</button>
         <button class="btn-char btn-meryem" onclick="startGame('Meryem')">🛡️ Meryem (9 Yaş) - Zırhlı Şövalye / Çift Zıplama</button>
@@ -217,7 +217,7 @@
             else specialAbilityTimer = 15;
 
             if (secilenKarakter === "Beril") {
-                activeScene.showFloatingText("ŞEKER YAĞMURU BAŞLADI! 🍭", 0xff477e);
+                activeScene.showFloatingText("KUROMİ ŞEKER YAĞMURU! 🍭💜", 0xff477e);
                 monsters.children.iterate((m) => { 
                     if(m && m.body) {
                         m.isCandy = true;
@@ -294,7 +294,6 @@
 
             let platformHeights = [370, 310, 250, 190, 130, 340, 220, 160];
             
-            // Platform genişlikleri dengelendi ve takılmayı önlemek için aralıklar açıldı
             for (let i = 0; i < 45; i++) {
                 let x = 240 + (i * 75); 
                 let y = platformHeights[i % platformHeights.length];
@@ -319,100 +318,90 @@
                 }
             }
 
-            // 👑 HER ÇOCUĞA ÖZEL KODLA KAHRAMAN ÇİZİMİ
             player = this.add.container(100, 350);
             let pG = this.add.graphics();
 
-            if (secilenKarakter === "Aybars") {
-                // 🍼 Aybars: Emekleyen yeşil tulumlu sevimli bebek
-                pG.fillStyle(0x2ecc71, 1); // Yeşil Tulum Gövde
-                pG.fillRoundedRect(-18, 5, 34, 16, 6);
-                pG.fillStyle(0xffffff, 1); // Arkada Bebek Bezi Kabarıklığı
-                pG.fillCircle(-16, 8, 7);
-                pG.fillStyle(0xffdbac, 1); // Yüz (Öne doğru bakıyor)
-                pG.fillCircle(10, 2, 11);
-                pG.fillStyle(0x4a2711, 1); // Kafada tek tel komik saç
-                pG.fillRect(8, -12, 3, 4);
-                pG.fillStyle(0x2c3e50, 1); // Gözler
-                pG.fillCircle(13, 0, 2);
+            if (secilenKarakter === "Beril") {
+                // 😈 BERİL ARTIK KUROMI! 💜🖤
+                // Siyah/Koyu Mor Gövde/Kıyafet
+                pG.fillStyle(0x2d142c, 1); 
+                pG.fillRoundedRect(-13, -2, 26, 24, 6);
+                // Boynundaki Fırfırlı Pembe Yaka Noktaları
+                pG.fillStyle(0xff75a0, 1);
+                pG.fillCircle(-8, 0, 3); pG.fillCircle(0, 2, 3); pG.fillCircle(8, 0, 3);
+                // Beyaz Yuvarlak Yüz
+                pG.fillStyle(0xffffff, 1); 
+                pG.fillCircle(0, -14, 12);
+                // Kuromi'nin İkonik Siyah Şapkası / Kulakları
+                pG.fillStyle(0x1a051d, 1);
+                pG.beginPath();
+                pG.arc(0, -14, 12.5, Math.PI, 0, false); // Kafanın üstünü kaplayan şapka
+                pG.fill();
+                // Sivri Kulaklar (Jester Hat kulakları)
+                pG.fillTriangle(-12, -20, -18, -35, -4, -24); // Sol Kulak
+                pG.fillTriangle(12, -20, 18, -35, 4, -24);   // Sağ Kulak
+                // Kulakların ucundaki pembe küçük toplar
+                pG.fillStyle(0xff75a0, 1);
+                pG.fillCircle(-18, -35, 3.5);
+                pG.fillCircle(18, -35, 3.5);
+                // Şapkanın tam ortasındaki Pembe Kuru Kafa Logosu
+                pG.fillStyle(0xff75a0, 1);
+                pG.fillCircle(0, -22, 3.5); // Kuru kafa kafası
+                pG.fillRect(-2, -19, 4, 3);    // Kuru kafa çenesi
+                // Kuromi'nin Çekik Siyah Gözleri
+                pG.fillStyle(0x2d142c, 1);
+                pG.fillTriangle(-7, -15, -3, -13, -4, -17); // Sol göz
+                pG.fillTriangle(7, -15, 3, -13, 4, -17);   // Sağ göz
+                // Tatlı Pembe Yanaklar
+                pG.fillStyle(0xffb3c6, 0.7);
+                pG.fillCircle(-8, -10, 2.5); pG.fillCircle(8, -10, 2.5);
+                // Küçük Asi Burnu
+                pG.fillStyle(0xff75a0, 1);
+                pG.fillCircle(0, -11, 1);
             } 
-            else if (secilenKarakter === "Beril") {
-                // ⚡ Beril: Kırmızı pelerinli, şimşek amblemli Şimşek Çocuk
-                pG.fillStyle(0xe74c3c, 1); // Kırmızı Dalgalanan Pelerin
-                pG.fillTriangle(-14, 0, -22, 25, -5, 18);
-                pG.fillStyle(0xf1c40f, 1); // Parlak Sarı Kostüm
-                pG.fillRoundedRect(-12, -4, 24, 26, 5);
-                pG.fillStyle(0xffdbac, 1); // Yüz
-                pG.fillCircle(0, -14, 11);
-                pG.fillStyle(0xe67e22, 1); // Turuncu Havalı Saçlar
-                pG.fillTriangle(-12, -22, 0, -28, -4, -18);
-                pG.fillTriangle(0, -28, 12, -22, 4, -18);
-                pG.fillStyle(0xe74c3c, 1); // Göğüsteki Şimşek Amblemi
-                pG.fillTriangle(0, -1, -4, 6, 4, 6);
-                pG.fillStyle(0x2c3e50, 1); // Gözler
-                pG.fillCircle(-4, -14, 2); pG.fillCircle(4, -14, 2);
+            else if (secilenKarakter === "Aybars") {
+                pG.fillStyle(0x2ecc71, 1); pG.fillRoundedRect(-18, 5, 34, 16, 6);
+                pG.fillStyle(0xffffff, 1); pG.fillCircle(-16, 8, 7);
+                pG.fillStyle(0xffdbac, 1); pG.fillCircle(10, 2, 11);
+                pG.fillStyle(0x4a2711, 1); pG.fillRect(8, -12, 3, 4);
+                pG.fillStyle(0x2c3e50, 1); pG.fillCircle(13, 0, 2);
             } 
             else if (secilenKarakter === "Neriman") {
-                // ❄️ Neriman: Kar taneli sihirli elbiseli Buz Kraliçesi
-                pG.fillStyle(0x74b9ff, 1); // Kabarık Mavi Prenses Elbisesi
-                pG.fillTriangle(0, -5, -15, 24, 15, 24);
-                pG.fillStyle(0xffffff, 1); // Kar Tanesi Detayı
-                pG.fillCircle(0, 10, 3);
-                pG.fillStyle(0xffdbac, 1); // Yüz
-                pG.fillCircle(0, -14, 11);
-                pG.fillStyle(0xfdcb6e, 1); // Sarı Uzun Saçlar
-                pG.fillCircle(-10, -10, 6); pG.fillCircle(10, -10, 6); pG.fillRect(-12, -10, 24, 12);
-                pG.fillStyle(0xae2573, 1); // Sihirli Değnek
-                pG.fillRect(10, 0, 3, 20); pG.fillStyle(0xffff00, 1); pG.fillCircle(11, 0, 4);
-                pG.fillStyle(0x2c3e50, 1); // Gözler
-                pG.fillCircle(-3, -14, 2); pG.fillCircle(3, -14, 2);
+                pG.fillStyle(0x74b9ff, 1); pG.fillTriangle(0, -5, -15, 24, 15, 24);
+                pG.fillStyle(0xffffff, 1); pG.fillCircle(0, 10, 3);
+                pG.fillStyle(0xffdbac, 1); pG.fillCircle(0, -14, 11);
+                pG.fillStyle(0xfdcb6e, 1); pG.fillCircle(-10, -10, 6); pG.fillCircle(10, -10, 6); pG.fillRect(-12, -10, 24, 12);
+                pG.fillStyle(0xae2573, 1); pG.fillRect(10, 0, 3, 20); pG.fillStyle(0xffff00, 1); pG.fillCircle(11, 0, 4);
+                pG.fillStyle(0x2c3e50, 1); pG.fillCircle(-3, -14, 2); pG.fillCircle(3, -14, 2);
             } 
             else if (secilenKarakter === "Meryem") {
-                // 🛡️ Meryem: Miğferli ve Kalkanlı Zırhlı Şövalye
-                pG.fillStyle(0x7f8c8d, 1); // Gri Çelik Gövde Zırhı
-                pG.fillRoundedRect(-12, -4, 24, 26, 6);
-                pG.fillStyle(0xbdc3c7, 1); // Sırtındaki Yuvarlak Koruma Kalkanı
-                pG.fillCircle(-13, 8, 9); pG.fillStyle(0xc0392b, 1); pG.fillCircle(-13, 8, 4);
-                pG.fillStyle(0xffdbac, 1); // Yüz
-                pG.fillCircle(0, -14, 11);
-                pG.fillStyle(0x95a5a6, 1); // Kafadaki Şövalye Miğferi
-                pG.arc(0, -15, 12, Math.PI, 0, false); pG.fill();
-                pG.fillStyle(0xd35400, 1); // Miğfer Tüyü
-                pG.fillTriangle(0, -27, -5, -34, 5, -34);
-                pG.fillStyle(0x2c3e50, 1); // Gözler
-                pG.fillCircle(-4, -12, 2); pG.fillCircle(4, -12, 2);
+                pG.fillStyle(0x7f8c8d, 1); pG.fillRoundedRect(-12, -4, 24, 26, 6);
+                pG.fillStyle(0xbdc3c7, 1); pG.fillCircle(-13, 8, 9); pG.fillStyle(0xc0392b, 1); pG.fillCircle(-13, 8, 4);
+                pG.fillStyle(0xffdbac, 1); pG.fillCircle(0, -14, 11);
+                pG.fillStyle(0x95a5a6, 1); pG.arc(0, -15, 12, Math.PI, 0, false); pG.fill();
+                pG.fillStyle(0xd35400, 1); pG.fillTriangle(0, -27, -5, -34, 5, -34);
+                pG.fillStyle(0x2c3e50, 1); pG.fillCircle(-4, -12, 2); pG.fillCircle(4, -12, 2);
             } 
             else if (secilenKarakter === "Masal") {
-                // 🎈 Masal: Uçuşan kanatlı ve balonlu Peri Kızı
-                pG.fillStyle(0xff781f, 0.6); // Arka Şeffaf Peri Kanatları
-                pG.fillCircle(-14, 2, 8); pG.fillCircle(-14, 12, 6);
-                pG.fillStyle(0xff85a2, 1); // Pembe Cici Elbise
-                pG.fillRoundedRect(-11, -4, 22, 25, 8);
-                pG.fillStyle(0xffdbac, 1); // Yüz
-                pG.fillCircle(0, -14, 11);
-                pG.fillStyle(0x2c3e50, 1); // Siyah Tokalı Saçlar
-                pG.fillCircle(0, -16, 12); pG.fillStyle(0xff477e, 1); pG.fillCircle(8, -22, 4);
-                pG.fillStyle(0xe74c3c, 1); // Elindeki Uçan Kırmızı Balon
-                pG.fillRect(11, 5, 1, 15); pG.fillStyle(0xff477e, 1); pG.fillCircle(11, 2, 6);
-                pG.fillStyle(0x2c3e50, 1); // Gözler
-                pG.fillCircle(-4, -12, 2); pG.fillCircle(4, -12, 2);
+                pG.fillStyle(0xff781f, 0.6); pG.fillCircle(-14, 2, 8); pG.fillCircle(-14, 12, 6);
+                pG.fillStyle(0xff85a2, 1); pG.fillRoundedRect(-11, -4, 22, 25, 8);
+                pG.fillStyle(0xffdbac, 1); pG.fillCircle(0, -14, 11);
+                pG.fillStyle(0x2c3e50, 1); pG.fillCircle(0, -16, 12); pG.fillStyle(0xff477e, 1); pG.fillCircle(8, -22, 4);
+                pG.fillStyle(0xe74c3c, 1); pG.fillRect(11, 5, 1, 15); pG.fillStyle(0xff477e, 1); pG.fillCircle(11, 2, 6);
+                pG.fillStyle(0x2c3e50, 1); pG.fillCircle(-4, -12, 2); pG.fillCircle(4, -12, 2);
             } 
             else if (secilenKarakter === "Bartu") {
-                // 👻 Bartu: Havalı mor kapüşonlu, gözleri parlayan Casus Hayalet
-                pG.fillStyle(0x6c5ce7, 1); // Gizemli Mor Pelerin/Gövde
-                pG.fillRoundedRect(-12, -4, 24, 26, 4);
-                pG.fillStyle(0xffdbac, 1); // Yüz bölgesi
-                pG.fillCircle(0, -14, 11);
-                pG.fillStyle(0x4a2711, 1); // Saç ucu
-                pG.fillRect(-5, -10, 10, 3);
-                pG.fillStyle(0x341f97, 1); // Kafayı Saran Büyük Kapüşon
-                pG.beginPath(); pG.arc(0, -14, 13, Math.PI, 0, false); pG.fill();
-                pG.fillStyle(0x00ff00, 1); // Karanlıkta Parlayan Neon Yeşil Gözler
-                pG.fillCircle(-4, -13, 2.5); pG.fillCircle(4, -13, 2.5);
+                pG.fillStyle(0x6c5ce7, 1); pG.fillRoundedRect(-12, -4, 24, 26, 4);
+                pG.fillStyle(0xffdbac, 1); pG.fillCircle(0, -14, 11);
+                pG.fillStyle(0x4a2711, 1); pG.fillRect(-5, -10, 10, 3);
+                pG.fillStyle(0x341f97, 1); pG.beginPath(); pG.arc(0, -14, 13, Math.PI, 0, false); pG.fill();
+                pG.fillStyle(0x00ff00, 1); pG.fillCircle(-4, -13, 2.5); pG.fillCircle(4, -13, 2.5);
             }
 
-            // Sevimli Gülümseme Çizgisi (Tüm karakterlere ortak ağız)
-            if(secilenKarakter !== "Aybars" && secilenKarakter !== "Bartu") {
+            // Ağız çizimleri (Kuromi'ye kurnaz küçük bir gülümseme)
+            if(secilenKarakter === "Beril") {
+                pG.lineStyle(1.5, 0x2d142c, 1); pG.beginPath(); pG.arc(0, -8, 2, 0, Math.PI, false); pG.strokePath();
+            } else if(secilenKarakter !== "Aybars" && secilenKarakter !== "Bartu") {
                 pG.lineStyle(2, 0xe74c3c, 1); pG.beginPath(); pG.arc(0, -9, 3, 0, Math.PI, false); pG.strokePath();
             } else if (secilenKarakter === "Aybars") {
                 pG.lineStyle(1.5, 0xe74c3c, 1); pG.beginPath(); pG.arc(12, 4, 2, 0, Math.PI, false); pG.strokePath();
@@ -421,7 +410,6 @@
             player.add(pG);
             this.physics.add.existing(player);
             
-            // 🛠️ TAKILMA ÖNLEYİCİ FİZİK KUTUSU AYARLARI
             player.body.setSize(24, 45);
             player.body.setOffset(-12, -22);
             player.body.setCollideWorldBounds(true);
@@ -640,7 +628,7 @@
                     }
                 });
 
-                let headerMsg = (currentLevel === 3) ? 'FİNAL BOSS SAVAŞI! KALAN SÜRE: ' : 'BOSS SAVAŞI! KALAN SÜRE: ';
+                let headerMsg = (currentLevel === 3) ? 'FİNAL BOSS SAVA Sİ! KALAN SÜRE: ' : 'BOSS SAVAŞI! KALAN SÜRE: ';
                 bossText.setText(headerMsg + bossTimer + 'sn').setColor("#f1c40f");
                 
                 bossTimerEvent = scene.time.addEvent({
