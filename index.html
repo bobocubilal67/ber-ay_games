@@ -15,24 +15,117 @@
             color: #2c3e50;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             min-height: 100vh; overflow: hidden;
+            position: relative;
         }
 
+        /* ================= DEKORATİF ARKA PLAN ELEMANLARI ================= */
+        
+        /* Deniz Feneri (Sol Arka) */
+        .lighthouse {
+            position: absolute; left: 5%; bottom: 0; width: 60px; height: 280px;
+            background: linear-gradient(to bottom, #fff 0%, #fff 20%, #e74c3c 20%, #e74c3c 40%, #fff 40%, #fff 60%, #e74c3c 60%, #e74c3c 80%, #fff 80%);
+            clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%); z-index: 1; opacity: 0.85;
+        }
+        .lighthouse-top {
+            position: absolute; left: 6%; bottom: 275px; width: 50px; height: 40px;
+            background: #34495e; border-radius: 6px 6px 0 0; z-index: 2;
+        }
+        .lighthouse-light {
+            position: absolute; left: calc(6% - 35px); bottom: 285px; width: 120px; height: 20px;
+            background: radial-gradient(circle, rgba(255,255,170,0.8) 0%, rgba(255,255,170,0) 70%);
+            transform: rotate(-10deg); filter: blur(2px); z-index: 3;
+        }
+
+        /* Büyük Şemsiye (Sol Ön) */
+        .umbrella {
+            position: absolute; left: 12%; bottom: 0; width: 140px; height: 160px; z-index: 2;
+        }
+        .umbrella-stick {
+            position: absolute; left: 67px; bottom: 0; width: 6px; height: 110px; background: #7f8c8d; border-radius: 3px;
+        }
+        .umbrella-top {
+            position: absolute; left: 0; bottom: 95px; width: 140px; height: 65px;
+            background: repeating-linear-gradient(90deg, #e74c3c, #e74c3c 20px, #fff 20px, #fff 40px);
+            border-radius: 140px 140px 10px 10px;
+        }
+
+        /* Yılbaşı Ağacı (Sağ Arka) */
+        .christmastree {
+            position: absolute; right: 6%; bottom: 0; width: 150px; height: 260px; z-index: 1;
+        }
+        .tree-trunk {
+            position: absolute; left: 65px; bottom: 0; width: 20px; height: 35px; background: #784212; border-radius: 4px;
+        }
+        .tree-layer1 {
+            position: absolute; left: 15px; bottom: 30px; width: 120px; height: 80px; background: #1e8449; clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+        }
+        .tree-layer2 {
+            position: absolute; left: 25px; bottom: 85px; width: 100px; height: 75px; background: #239b56; clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+        }
+        .tree-layer3 {
+            position: absolute; left: 35px; bottom: 140px; width: 80px; height: 70px; background: #28b463; clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+        }
+        .tree-star {
+            position: absolute; left: 63px; bottom: 205px; width: 24px; height: 24px; background: #f1c40f;
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+            animation: pulse 1.5s infinite alternate;
+        }
+        .tree-ball {
+            position: absolute; width: 12px; height: 12px; border-radius: 50%; animation: flash 1s infinite alternate;
+        }
+
+        /* Rengarenk Şekerler (Etrafa Saçılan Lolipoplar) */
+        .candy1 {
+            position: absolute; left: 28%; top: 15%; width: 45px; height: 45px;
+            background: radial-gradient(circle, #ff75a0 0%, #ff477e 40%, #fff 40%, #fff 60%, #ff477e 60%);
+            border-radius: 50%; z-index: 1; transform: rotate(15deg);
+        }
+        .candy1::after { content: ''; position: absolute; left: 20px; top: 43px; width: 4px; height: 35px; background: #fff; }
+        
+        .candy2 {
+            position: absolute; right: 25%; top: 22%; width: 35px; height: 35px;
+            background: repeating-conic-gradient(#f1c40f 0% 25%, #e67e22 25% 50%);
+            border-radius: 50%; z-index: 1; transform: rotate(-20deg);
+        }
+        .candy2::after { content: ''; position: absolute; left: 16px; top: 33px; width: 3px; height: 25px; background: #fff; }
+
+        /* Muhteşem Kahramanlar Toplu Resmi (Alt Kısımda Hizalı) */
+        .heroes-group {
+            position: absolute; bottom: -5px; left: 50%; transform: translateX(-50%);
+            display: flex; gap: 15px; align-items: flex-end; z-index: 2; pointer-events: none; opacity: 0.95;
+        }
+        .mini-hero { width: 35px; height: 45px; position: relative; }
+        
+        /* Mini Kahraman Çizimleri (CSS Sanatı) */
+        .mh-beril { background: #2d142c; border-radius: 8px 8px 0 0; border-top: 8px solid #ff75a0; }
+        .mh-aybars { background: #fff; border-radius: 50% 50% 0 0; border-top: 10px solid #74b9ff; height: 35px; border-bottom: 6px solid #ff7675; }
+        .mh-neriman { background: #74b9ff; border-radius: 10px 10px 0 0; border-top: 8px solid #fdcb6e; }
+        .mh-meryem { background: #7f8c8d; border-radius: 6px 6px 0 0; border-top: 8px solid #bdc3c7; }
+        .mh-masal { background: #ff85a2; border-radius: 12px 12px 0 0; border-top: 6px solid #2c3e50; }
+        .mh-bartu { background: #6c5ce7; border-radius: 6px 6px 0 0; opacity: 0.7; border-top: 7px solid #341f97; }
+
+        @keyframes flash { 0% { opacity: 0.4; } 100% { opacity: 1; } }
+        @keyframes pulse { 0% { transform: scale(0.9); } 100% { transform: scale(1.1); } }
+
+        /* ================= SEÇİM EKRANI VE KUTULAR ================= */
         #char-selection { 
             text-align: center; 
-            padding: 30px 20px; 
-            max-width: 500px; 
-            width: 92%; 
-            background: rgba(255, 255, 255, 0.85);
+            padding: 25px 20px; 
+            max-width: 480px; 
+            width: 90%; 
+            background: rgba(255, 255, 255, 0.92);
             border-radius: 24px;
-            box-shadow: 0 12px 28px rgba(0,0,0,0.15);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.18);
             border: 4px dashed #ff7675;
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(8px);
+            z-index: 10; /* Önde kalması şart */
+            margin-bottom: 35px;
         }
         
         .btn-char {
             color: #2c3e50; 
-            padding: 14px 20px; 
-            margin: 10px 0; 
+            padding: 13px 20px; 
+            margin: 9px 0; 
             font-size: 16px; 
             font-weight: bold;
             cursor: pointer; 
@@ -58,7 +151,7 @@
             box-shadow: 0 1px 0 transparent;
         }
         
-        #game-wrapper { display: none; position: relative; width: 100vw; height: 100vh; max-width: 800px; max-height: 600px; }
+        #game-wrapper { display: none; position: relative; width: 100vw; height: 100vh; max-width: 800px; max-height: 600px; z-index: 20; }
         #game-container { width: 100%; height: 70%; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
         
         .mobile-controls {
@@ -95,6 +188,40 @@
     </style>
 </head>
 <body>
+
+    <div class="lighthouse"></div>
+    <div class="lighthouse-top"></div>
+    <div class="lighthouse-light"></div>
+    
+    <div class="umbrella">
+        <div class="umbrella-stick"></div>
+        <div class="umbrella-top"></div>
+    </div>
+
+    <div class="candy1"></div>
+    <div class="candy2"></div>
+
+    <div class="christmastree">
+        <div class="tree-trunk"></div>
+        <div class="tree-layer1"></div>
+        <div class="tree-layer2"></div>
+        <div class="tree-layer3"></div>
+        <div class="tree-star"></div>
+        <div class="tree-ball" style="background:#e74c3c; left:45px; bottom:60px;"></div>
+        <div class="tree-ball" style="background:#f1c40f; left:85px; bottom:75px;"></div>
+        <div class="tree-ball" style="background:#3498db; left:65px; bottom:110px;"></div>
+        <div class="tree-ball" style="background:#e74c3c; left:45px; bottom:150px;"></div>
+        <div class="tree-ball" style="background:#f1c40f; left:75px; bottom:165px;"></div>
+    </div>
+
+    <div class="heroes-group">
+        <div class="mini-hero mh-beril" title="Beril"></div>
+        <div class="mini-hero mh-aybars" title="Aybars"></div>
+        <div class="mini-hero mh-neriman" title="Neriman"></div>
+        <div class="mini-hero mh-meryem" title="Meryem"></div>
+        <div class="mini-hero mh-masal" title="Masal"></div>
+        <div class="mini-hero mh-bartu" title="Bartu"></div>
+    </div>
 
     <div id="char-selection">
         <div class="signature-top">✨ Designed by DtBY ✨</div>
@@ -149,6 +276,9 @@
             secilenKarakter = karakterIsmi; playerLives = 1; isInvulnerable = false; isAbilityActive = false;
             bossActive = false; bossTimer = 30; moveDir = 0; meryemJumpCount = 0; currentLevel = 1; monsterCounter = 0;
             
+            // Oyun başladığında dekorasyonları gizleyelim
+            toggleBackgroundDecorations(false);
+            
             document.getElementById('char-selection').style.display = 'none';
             document.getElementById('game-wrapper').style.display = 'block';
             document.getElementById('game-over-screen').style.display = 'none';
@@ -170,8 +300,25 @@
             if (bossTimerEvent) bossTimerEvent.remove();
             if (specialAbilityTimerEvent) specialAbilityTimerEvent.remove();
             moveDir = 0;
+            
+            // Seçim ekranına dönünce şemsiye, fener ve kahramanlar geri gelsin
+            toggleBackgroundDecorations(true);
+            
             document.getElementById('game-wrapper').style.display = 'none';
             document.getElementById('char-selection').style.display = 'block';
+        }
+
+        function toggleBackgroundDecorations(show) {
+            let displayState = show ? "block" : "none";
+            let displayFlexState = show ? "flex" : "none";
+            document.querySelector('.lighthouse').style.display = displayState;
+            document.querySelector('.lighthouse-top').style.display = displayState;
+            document.querySelector('.lighthouse-light').style.display = displayState;
+            document.querySelector('.umbrella').style.display = displayState;
+            document.querySelector('.christmastree').style.display = displayState;
+            document.querySelector('.candy1').style.display = displayState;
+            document.querySelector('.candy2').style.display = displayState;
+            document.querySelector('.heroes-group').style.display = displayFlexState;
         }
 
         function setupMobileControls() {
@@ -354,33 +501,15 @@
                 pG.fillStyle(0xff75a0, 1); pG.fillCircle(0, -11, 1);
             } 
             else if (secilenKarakter === "Aybars") {
-                // 🍼 YENİ SEVİMLİ VE MİNİK AYBARS (Emekleme İptal, Ayakta ve Şirin!)
-                // Mavi Bere ve Ponpon
-                pG.fillStyle(0x74b9ff, 1);
-                pG.fillCircle(0, -26, 4); // Berenin ponponu
-                pG.fillRoundedRect(-10, -23, 20, 12, 4); // Bere gövdesi
-                
-                // Kafa ve Sevimli Yüz
-                pG.fillStyle(0xffdbac, 1);
-                pG.fillCircle(0, -10, 10); // Kafa
-                pG.fillStyle(0xff7675, 0.6);
-                pG.fillCircle(-6, -8, 2.5); pG.fillCircle(6, -8, 2.5); // Pembe yanaklar
-                pG.fillStyle(0x2c3e50, 1);
-                pG.fillCircle(-4, -11, 2.5); pG.fillCircle(4, -11, 2.5); // Büyük şirin gözler
-                pG.fillStyle(0xffffff, 1);
-                pG.fillCircle(-4.5, -12, 0.8); pG.fillCircle(3.5, -12, 0.8); // Göz parıltısı
-                
-                // Gövde ve Kırmızı Şort
-                pG.fillStyle(0xffffff, 1);
-                pG.fillRoundedRect(-8, 0, 16, 12, 3); // Tişört
-                pG.fillStyle(0xff7675, 1);
-                pG.fillRoundedRect(-8, 8, 16, 8, 2); // Kırmızı Şort
-                
-                // Küçük Ayaklar
-                pG.fillStyle(0xffdbac, 1);
-                pG.fillRect(-6, 16, 4, 4); pG.fillRect(2, 16, 4, 4);
-                pG.fillStyle(0xffffff, 1);
-                pG.fillCircle(-4, 20, 3); pG.fillCircle(4, 20, 3); // Minik patikler
+                pG.fillStyle(0x74b9ff, 1); pG.fillCircle(0, -26, 4); pG.fillRoundedRect(-10, -23, 20, 12, 4);
+                pG.fillStyle(0xffdbac, 1); pG.fillCircle(0, -10, 10);
+                pG.fillStyle(0xff7675, 0.6); pG.fillCircle(-6, -8, 2.5); pG.fillCircle(6, -8, 2.5);
+                pG.fillStyle(0x2c3e50, 1); pG.fillCircle(-4, -11, 2.5); pG.fillCircle(4, -11, 2.5);
+                pG.fillStyle(0xffffff, 1); pG.fillCircle(-4.5, -12, 0.8); pG.fillCircle(3.5, -12, 0.8);
+                pG.fillStyle(0xffffff, 1); pG.fillRoundedRect(-8, 0, 16, 12, 3);
+                pG.fillStyle(0xff7675, 1); pG.fillRoundedRect(-8, 8, 16, 8, 2);
+                pG.fillStyle(0xffdbac, 1); pG.fillRect(-6, 16, 4, 4); pG.fillRect(2, 16, 4, 4);
+                pG.fillStyle(0xffffff, 1); pG.fillCircle(-4, 20, 3); pG.fillCircle(4, 20, 3);
             } 
             else if (secilenKarakter === "Neriman") {
                 pG.fillStyle(0x74b9ff, 1); pG.fillTriangle(0, -5, -15, 24, 15, 24);
@@ -419,14 +548,12 @@
             } else if(secilenKarakter !== "Aybars" && secilenKarakter !== "Bartu") {
                 pG.lineStyle(2, 0xe74c3c, 1); pG.beginPath(); pG.arc(0, -9, 3, 0, Math.PI, false); pG.strokePath();
             } else if (secilenKarakter === "Aybars") {
-                // Aybars için minik bir tebessüm çiziyoruz
                 pG.lineStyle(1.5, 0xe74c3c, 1); pG.beginPath(); pG.arc(0, -6, 2, 0, Math.PI, false); pG.strokePath();
             }
 
             player.add(pG);
             this.physics.add.existing(player);
             
-            // Aybars da artık ayakta durduğu için ideal kutu boyutlarına sahip
             player.body.setSize(24, 38);
             player.body.setOffset(-12, -15);
             player.body.setCollideWorldBounds(true);
