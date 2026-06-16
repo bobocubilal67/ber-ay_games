@@ -67,18 +67,20 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px;
+            padding: 15px 20px;
             position: relative;
         }
-        .nav-buttons { display: flex; gap: 20px; }
+        .nav-buttons { display: flex; gap: 15px; }
+        .action-buttons { display: flex; gap: 15px; }
+        
         .ctrl-btn {
-            width: 75px;
-            height: 75px;
+            width: 70px;
+            height: 70px;
             background: #e74c3c;
             border: none;
             border-radius: 50%;
             color: white;
-            font-size: 30px;
+            font-size: 28px;
             font-weight: bold;
             box-shadow: 0 6px 0 #c0392b;
             display: flex;
@@ -91,8 +93,11 @@
         }
         .jump-btn { background: #2ecc71; box-shadow: 0 6px 0 #27ae60; }
         .jump-btn:active { box-shadow: 0 2px 0 #27ae60; }
+        
+        /* Özel Güç Tuşu */
+        .ability-btn { background: #f1c40f; color: #2c3e50; font-size: 32px; box-shadow: 0 6px 0 #f39c12; display: none; }
+        .ability-btn:active { box-shadow: 0 2px 0 #f39c12; }
 
-        /* Reklam ve İmzalar */
         .signature-top {
             font-size: 14px;
             color: #f1c40f;
@@ -102,20 +107,20 @@
         }
         .footer-credits {
             position: absolute;
-            bottom: 5px;
+            bottom: 3px;
             width: 100%;
             text-align: center;
-            font-size: 11px;
+            font-size: 10px;
             color: rgba(255,255,255,0.4);
             pointer-events: none;
             left: 0;
         }
 
-        /* 🚨 OYUN BİTTİ PANELİ (POP-UP) */
+        /* OYUN BİTTİ PANELİ */
         #game-over-screen {
             display: none;
             position: absolute;
-            top: 20%;
+            top: 15%;
             left: 50%;
             transform: translate(-50%, 0);
             background: rgba(0, 0, 0, 0.9);
@@ -128,11 +133,7 @@
             max-width: 350px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.7);
         }
-        #game-over-screen h2 {
-            color: #e74c3c;
-            margin-top: 0;
-            font-size: 24px;
-        }
+        #game-over-screen h2 { color: #e74c3c; margin-top: 0; }
         .popup-btn {
             width: 100%;
             padding: 12px;
@@ -142,11 +143,9 @@
             font-size: 16px;
             font-weight: bold;
             cursor: pointer;
-            transition: 0.2s;
         }
         .btn-restart { background-color: #2ecc71; color: white; }
         .btn-close-game { background-color: #7f8c8d; color: white; }
-        .popup-btn:active { transform: scale(0.98); }
     </style>
 </head>
 <body>
@@ -155,34 +154,36 @@
     <div id="char-selection">
         <div class="signature-top">Designed by DtBY</div>
         <h2 style="margin-bottom: 25px;">Süper Kahramanını Seç!</h2>
-        <button class="btn-char" onclick="startGame('Beril')">⚡ Beril (9 Yaş) - Süper Hız</button>
-        <button class="btn-char" onclick="startGame('Aybars')">🦘 Aybars (2 Yaş) - Mega Zıplama</button>
-        <button class="btn-char" onclick="startGame('Neriman')">🛡️ Neriman (9 Yaş)</button>
-        <button class="btn-char" onclick="startGame('Meryem')">🔮 Meryem (9 Yaş)</button>
-        <button class="btn-char" onclick="startGame('Masal')">🎈 Masal (5 Yaş)</button>
-        <button class="btn-char" onclick="startGame('Bartu')">💥 Bartu (9 Yaş)</button>
+        <button class="btn-char" onclick="startGame('Beril')">⚡ Beril (9 Yaş) - Süper Hız (Pasif)</button>
+        <button class="btn-char" onclick="startGame('Aybars')">🦘 Aybars (2 Yaş) - Mega Zıplama (Pasif)</button>
+        <button class="btn-char" onclick="startGame('Neriman')">❄️ Neriman (9 Yaş) - Canavarları Dondur</button>
+        <button class="btn-char" onclick="startGame('Meryem')">🛡️ Meryem (9 Yaş) - Koruma Kalkanı</button>
+        <button class="btn-char" onclick="startGame('Masal')">🎈 Masal (5 Yaş) - Süzülerek Uçma</button>
+        <button class="btn-char" onclick="startGame('Bartu')">💥 Bartu (9 Yaş) - Güç Dalgası (Yok Et)</button>
         <div style="margin-top:20px; font-size:12px; color:#aaa;">Bilal Yıldırım tarafından yapılmıştır.</div>
     </div>
 
     <!-- Oyun Alanı -->
     <div id="game-wrapper">
-        <!-- Oyun İçi Menü Paneli -->
         <div id="game-over-screen">
             <h2>OYUN BİTTİ</h2>
-            <p id="game-over-msg" style="color:#ddd; margin-bottom:20px;">Canavara yakalandın!</p>
+            <p style="color:#ddd; margin-bottom:20px;">Canavara yakalandın ve hiç kalbin kalmadı!</p>
             <button class="popup-btn btn-restart" onclick="restartGameInstance()">🔄 Yeniden Başlat</button>
             <button class="popup-btn btn-close-game" onclick="closeGameInstance()">❌ Oyunu Kapat</button>
         </div>
 
         <div id="game-container"></div>
         
-        <!-- Mobil Kontrol D-Pad -->
+        <!-- Mobil Kontroller -->
         <div class="mobile-controls">
             <div class="nav-buttons">
                 <button id="btnLeft" class="ctrl-btn">◀</button>
                 <button id="btnRight" class="ctrl-btn">▶</button>
             </div>
-            <button id="btnJump" class="ctrl-btn jump-btn">▲</button>
+            <div class="action-buttons">
+                <button id="btnAbility" class="ctrl-btn ability-btn">★</button>
+                <button id="btnJump" class="ctrl-btn jump-btn">▲</button>
+            </div>
             
             <div class="footer-credits">
                 Bilal Yıldırım tarafından yapılmıştır. | Designed by DtBY
@@ -194,36 +195,44 @@
         let secilenKarakter = "";
         let moveDir = 0; 
         let gameInstance = null;
+        let playerLives = 1; // Başlangıç canı
+        let isInvulnerable = false; // Hasar aldıktan sonra yanıp sönme durumu
+        let isAbilityActive = false;
+        let abilityTimerEvent = null;
 
         function startGame(karakterIsmi) {
             secilenKarakter = karakterIsmi;
+            playerLives = 1; // Her oyun başında 1 can ile başlar, maksimum 3 olur
+            isInvulnerable = false;
+            isAbilityActive = false;
+            
             document.getElementById('char-selection').style.display = 'none';
             document.getElementById('game-wrapper').style.display = 'block';
             document.getElementById('game-over-screen').style.display = 'none';
             
-            setupMobileControls();
-            
-            // Eğer eski bir oyun objesi varsa temizle
-            if (gameInstance) {
-                gameInstance.destroy(true);
+            // Özel güç butonu kontrolü (Beril ve Aybars hariç göster)
+            const abBtn = document.getElementById('btnAbility');
+            if(secilenKarakter !== "Beril" && secilenKarakter !== "Aybars") {
+                abBtn.style.display = "flex";
+            } else {
+                abBtn.style.display = "none";
             }
-            // Yeni oyunu başlat
+
+            setupMobileControls();
+            if (gameInstance) gameInstance.destroy(true);
             gameInstance = new Phaser.Game(config);
         }
 
-        // Yeniden Başlat butonuna basınca çalışan fonksiyon
         function restartGameInstance() {
-            document.getElementById('game-over-screen').style.display = 'none';
-            // Sayfayı yenilemeden sadece karakter seçimine atar ve temiz bir başlangıç sunar
             closeGameInstance();
         }
 
-        // Oyunu kapatıp ana ekrana dönme fonksiyonu
         function closeGameInstance() {
             if (gameInstance) {
                 gameInstance.destroy(true);
                 gameInstance = null;
             }
+            if (abilityTimerEvent) abilityTimerEvent.remove();
             moveDir = 0;
             document.getElementById('game-wrapper').style.display = 'none';
             document.getElementById('game-over-screen').style.display = 'none';
@@ -234,52 +243,81 @@
             const btnLeft = document.getElementById('btnLeft');
             const btnRight = document.getElementById('btnRight');
             const btnJump = document.getElementById('btnJump');
+            const btnAbility = document.getElementById('btnAbility');
 
-            btnLeft.addEventListener('touchstart', (e) => { e.preventDefault(); moveDir = -1; });
-            btnLeft.addEventListener('touchend', () => { moveDir = 0; });
-            btnLeft.addEventListener('mousedown', () => { moveDir = -1; });
-            btnLeft.addEventListener('mouseup', () => { moveDir = 0; });
-
-            btnRight.addEventListener('touchstart', (e) => { e.preventDefault(); moveDir = 1; });
-            btnRight.addEventListener('touchend', () => { moveDir = 0; });
-            btnRight.addEventListener('mousedown', () => { moveDir = 1; });
-            btnRight.addEventListener('mouseup', () => { moveDir = 0; });
-
-            btnJump.addEventListener('touchstart', (e) => { e.preventDefault(); makePlayerJump(); });
-            btnJump.addEventListener('mousedown', () => { makePlayerJump(); });
+            btnLeft.onpointerdown = () => { moveDir = -1; };
+            btnLeft.onpointerup = () => { moveDir = 0; };
+            btnRight.onpointerdown = () => { moveDir = 1; };
+            btnRight.onpointerup = () => { moveDir = 0; };
+            btnJump.onpointerdown = () => { makePlayerJump(); };
+            
+            btnAbility.onpointerdown = () => { triggerSpecialAbility(); };
         }
 
         function makePlayerJump() {
             if (player && player.body && player.body.touching.down) {
-                let ziplamaGucu = (secilenKarakter === "Aybars") ? -550 : -320;
+                let gravityFactor = isAbilityActive && secilenKarakter === "Masal" ? -180 : -320;
+                let ziplamaGucu = (secilenKarakter === "Aybars") ? -550 : gravityFactor;
                 player.body.setVelocityY(ziplamaGucu);
             }
         }
 
+        // 🌟 ÖZEL GÜCÜ TETİKLEME (15 SANİYE)
+        function triggerSpecialAbility() {
+            if (isAbilityActive) return; // Zaten aktifse tekrar basılamasın
+            isAbilityActive = true;
+            document.getElementById('btnAbility').style.opacity = "0.4"; // Butonu soluklaştır (bekleme modu)
+
+            let activeScene = gameInstance.scene.scenes[0];
+            activeScene.showFloatingText("ÖZEL GÜÇ AKTİF!", 0xf1c40f);
+
+            // Karakterlere göre özel güç lojikleri
+            if (secilenKarakter === "Neriman") {
+                // Canavarları durdur
+                monsters.children.iterate((m) => { m.body.setVelocityX(0); });
+            } else if (secilenKarakter === "Meryem") {
+                player.setTint(0x3498db); // Mavi kalkan rengi
+            } else if (secilenKarakter === "Masal") {
+                activeScene.physics.world.gravity.y = 200; // Hafif yerçekimi
+            } else if (secilenKarakter === "Bartu") {
+                // Ekrandaki canavarları yok et
+                monsters.clear(true, true);
+                activeScene.showFloatingText("CANAVARLAR YOK EDİLDİ!", 0xe74c3c);
+            }
+
+            // 15 Saniye sonra gücü kapatma zamanlayıcısı
+            abilityTimerEvent = activeScene.time.delayedCall(15000, () => {
+                isAbilityActive = false;
+                document.getElementById('btnAbility').style.opacity = "1";
+                activeScene.physics.world.gravity.y = 700; // Yerçekimini sıfırla
+                player.clearTint();
+                activeScene.showFloatingText("Özel Güç Bitti", #ffffff);
+                
+                // Neriman'ın canavarları donmuşsa yeniden yürüt
+                if(secilenKarakter === "Neriman") {
+                    monsters.children.iterate((m) => { m.body.setVelocityX(-60); });
+                }
+            }, [], activeScene);
+        }
+
         const config = {
             type: Phaser.AUTO,
-            width: 800,
-            height: 450,
+            width: 800, height: 450,
             parent: 'game-container',
-            physics: {
-                default: 'arcade',
-                arcade: { gravity: { y: 700 }, debug: false }
-            },
+            physics: { default: 'arcade', arcade: { gravity: { y: 700 }, debug: false } },
             scene: { create: create, update: update }
         };
 
-        let player;
-        let platforms;
-        let monsters;
-        let infoText;
+        let player; let platforms; let monsters; let hearts;
+        let infoText; let livesText; let abilityText;
 
         function create() {
+            let self = this;
             this.cameras.main.setBackgroundColor('#34495e');
 
             platforms = this.physics.add.staticGroup();
             let ground = this.add.rectangle(400, 435, 800, 30, 0x27ae60);
             platforms.add(ground);
-
             platforms.add(this.add.rectangle(600, 300, 200, 15, 0xe67e22));
             platforms.add(this.add.rectangle(200, 220, 200, 15, 0xe67e22));
 
@@ -288,31 +326,97 @@
             player.body.setCollideWorldBounds(true);
 
             monsters = this.physics.add.group();
-            let monster1 = this.add.rectangle(600, 260, 25, 25, 0xc0392b);
-            let monster2 = this.add.rectangle(200, 180, 25, 25, 0xc0392b);
-            monsters.add(monster1);
-            monsters.add(monster2);
+            spawnMonster(this, 600, 260);
+            spawnMonster(this, 200, 180);
 
-            monsters.children.iterate((monster) => {
-                this.physics.add.existing(monster);
-                monster.body.setCollideWorldBounds(true);
-                monster.body.setVelocityX(-60);
+            // ❤️ RASTGELE YERDE KALP (CAN) OLUŞTURMA GRUBU
+            hearts = this.physics.add.group();
+            this.time.addEvent({
+                delay: Phaser.Math.Between(5000, 12000), // 5-12 saniyede bir dener
+                callback: () => {
+                    if (hearts.getLength() < 1 && playerLives < 3) {
+                        // Rastgele üst platform koordinatları seçilir
+                        let xPos = Phaser.Math.Between(100, 700);
+                        let yPos = Phaser.Math.Between(150, 350);
+                        
+                        // Kırmızı bir kalp (Daire olarak simüle edildi)
+                        let heart = self.add.circle(xPos, yPos, 12, 0xe74c3c);
+                        hearts.add(heart);
+                        self.physics.add.existing(heart);
+                        heart.body.setAllowGravity(false); // Havada asılı dursun
+                    }
+                },
+                loop: true
             });
 
+            // Fizik Çarpışmaları
             this.physics.add.collider(player, platforms);
             this.physics.add.collider(monsters, platforms);
             
-            // 🚨 CANAVARA ÇARPINCA TETİKLENEN ALAN
-            this.physics.add.overlap(player, monsters, () => {
-                // Fizik motorunu durdur
-                this.physics.pause();
-                moveDir = 0; // Hareketi sıfırla
-                
-                // Pop-up ekranını göster
-                document.getElementById('game-over-screen').style.display = 'block';
+            // Kalp Toplama Mantığı
+            this.physics.add.overlap(player, hearts, (p, heart) => {
+                if (playerLives < 3) {
+                    playerLives++;
+                    heart.destroy();
+                    livesText.setText('❤️ Canlar: ' + '❤️'.repeat(playerLives));
+                    self.showFloatingText("+1 CAN ALINDI!", 0x2ecc71);
+                }
             }, null, this);
 
-            infoText = this.add.text(15, 15, 'Süper Kahraman: ' + secilenKarakter, { fontSize: '16px', color: '#fff', fontWeight: 'bold' });
+            // Canavara Çarpma Mantığı
+            this.physics.add.overlap(player, monsters, () => {
+                if (isInvulnerable) return; // Yanıp sönüyorsa hasar alma
+                if (isAbilityActive && secilenKarakter === "Meryem") return; // Meryem'in kalkanı varsa koru
+
+                if (playerLives > 1) {
+                    // Kalbi varsa harca, koruma moduna geç ve yanıp sön
+                    playerLives--;
+                    livesText.setText('❤️ Canlar: ' + '❤️'.repeat(playerLives));
+                    triggerInvulnerability(self);
+                } else {
+                    // Kalbi yoksa oyun biter
+                    self.physics.pause();
+                    moveDir = 0;
+                    document.getElementById('game-over-screen').style.display = 'block';
+                }
+            }, null, this);
+
+            // Ekran Metinleri
+            infoText = this.add.text(15, 15, 'Süper Kahraman: ' + secilenKarakter, { fontSize: '15px', color: '#fff', fontWeight: 'bold' });
+            livesText = this.add.text(15, 40, '❤️ Canlar: ❤️', { fontSize: '15px', color: '#e74c3c', fontWeight: 'bold' });
+            
+            // Yardımcı Fonksiyon: Ekranda yazı uçurma
+            this.showFloatingText = function(text, color) {
+                let txt = self.add.text(player.x - 40, player.y - 50, text, { fontSize: '14px', color: Phaser.Display.Color.IntegerToColor(color).rgba, fontWeight:'bold' });
+                self.tweens.add({ targets: txt, y: txt.y - 50, alpha: 0, duration: 1500, onComplete: () => txt.destroy() });
+            };
+        }
+
+        function spawnMonster(scene, x, y) {
+            let monster = scene.add.rectangle(x, y, 25, 25, 0xc0392b);
+            monsters.add(monster);
+            scene.physics.add.existing(monster);
+            monster.body.setCollideWorldBounds(true);
+            monster.body.setVelocityX(-60);
+        }
+
+        // 🛡️ YANIP SÖNME VE HASAR KORUMASI
+        function triggerInvulnerability(scene) {
+            isInvulnerable = true;
+            scene.showFloatingText("1 CAN GİTTİ! KORUMA AKTİF", 0xf39c12);
+
+            // Yanıp sönme efekti (Tween)
+            scene.tweens.add({
+                targets: player,
+                alpha: 0.2,
+                duration: 150,
+                yoyo: true,
+                repeat: 8, // Yaklaşık 2.5 saniye sürer
+                onComplete: () => {
+                    player.alpha = 1;
+                    isInvulnerable = false;
+                }
+            });
         }
 
         function update() {
@@ -321,12 +425,15 @@
                 player.body.setVelocityX(moveDir * hizAyari);
             }
 
-            monsters.children.iterate((monster) => {
-                if (monster.body && monster.body.blocked) {
-                    if (monster.body.blocked.left) monster.body.setVelocityX(60);
-                    if (monster.body.blocked.right) monster.body.setVelocityX(-60);
-                }
-            });
+            // Canavarların yön kontrolü (Eğer dondurulmadıysa)
+            if (!isAbilityActive || secilenKarakter !== "Neriman") {
+                monsters.children.iterate((monster) => {
+                    if (monster && monster.body && monster.body.blocked) {
+                        if (monster.body.blocked.left) monster.body.setVelocityX(60);
+                        if (monster.body.blocked.right) monster.body.setVelocityX(-60);
+                    }
+                });
+            }
         }
     </script>
 </body>
