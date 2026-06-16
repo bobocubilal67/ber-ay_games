@@ -340,25 +340,50 @@
         let currentLevel = 1;
         let monsterCounter = 0; 
 
-        function startGame(karakterIsmi) {
-            secilenKarakter = karakterIsmi; playerLives = 1; isInvulnerable = false; isAbilityActive = false;
-            bossActive = false; bossTimer = 30; moveDir = 0; meryemJumpCount = 0; currentLevel = 1; monsterCounter = 0;
-            
-            document.getElementById('char-selection').style.display = 'none';
-            document.getElementById('game-wrapper').style.display = 'block';
-            document.getElementById('game-over-screen').style.display = 'none';
-            
-            const abBtn = document.getElementById('btnAbility');
-            if(secilenKarakter !== "Aybars" && secilenKarakter !== "Meryem") {
-                abBtn.style.display = "flex"; abBtn.style.opacity = "1";
-            } else { abBtn.style.display = "none"; }
+         function startGame(karakterIsmi, resetLevel = true) {
+    if (resetLevel) {
+        currentLevel = 1; // Yeni oyunsa 1. bölümden başla
+    }
+    
+    secilenKarakter = karakterIsmi;
+    playerLives = 1; 
+    isInvulnerable = false;
+    isAbilityActive = false;
+    bossActive = false;
+    bossTimer = 30;
+    moveDir = 0;
+    meryemJumpCount = 0;
+    monsterCounter = 0;
 
-            setupMobileControls();
-            if (gameInstance) gameInstance.destroy(true);
-            gameInstance = new Phaser.Game(config);
-        }
+    document.getElementById('char-selection').style.display = 'none';
+    document.getElementById('game-wrapper').style.display = 'block';
+    document.getElementById('game-over-screen').style.display = 'none';
 
-        function restartGameInstance() { closeGameInstance(); }
+    // Karakter yetenek butonları
+    const abBtn = document.getElementById('btnAbility');
+    if(secilenKarakter !== "Aybars" && secilenKarakter !== "Meryem") {
+        abBtn.style.display = "flex"; 
+    } else {
+        abBtn.style.display = "none";
+    }
+
+    setupMobileControls();
+
+    if (gameInstance) gameInstance.destroy(true);
+    gameInstance = new Phaser.Game(config);
+}
+
+        function restartGameInstance() {
+    let savedLevel = currentLevel; // O anki bölümü hafızaya al
+    closeGameInstance(); // Oyunu temizle
+    
+    // startGame'i 'false' parametresiyle çağırarak bölümün sıfırlanmamasını sağla
+    startGame(secilenKarakter, false);
+    
+    // Oyun yeniden kurulduktan sonra sakladığımız bölümü geri yükle
+    currentLevel = savedLevel;
+}
+
         function closeGameInstance() {
             if (gameInstance) { gameInstance.destroy(true); gameInstance = null; }
             if (abilityTimerEvent) abilityTimerEvent.remove();
