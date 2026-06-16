@@ -105,13 +105,15 @@
         let specialAbilityTimerEvent = null;
         
         let currentLevel = 1;
+        let monsterCounter = 0; // Her canavara benzersiz kimlik vermek için sayaç
 
         function startGame(karakterIsmi) {
             secilenKarakter = karakterIsmi; playerLives = 1; isInvulnerable = false; isAbilityActive = false;
-            bossActive = false; bossTimer = 30; moveDir = 0; meryemJumpCount = 0; currentLevel = 1;
+            bossActive = false; bossTimer = 30; moveDir = 0; meryemJumpCount = 0; currentLevel = 1; monsterCounter = 0;
             
             document.getElementById('char-selection').style.display = 'none';
             document.getElementById('game-wrapper').style.display = 'block';
+            document.getElementById('game-over-screen').style.none = 'none';
             document.getElementById('game-over-screen').style.display = 'none';
             
             const abBtn = document.getElementById('btnAbility');
@@ -176,7 +178,7 @@
 
             if (secilenKarakter === "Neriman") {
                 activeScene.showFloatingText("DONDURMA GÜCÜ AKTİF! ❄️", 0x3498db);
-                monsters.children.iterate((m) => { if(m && m.body) m.body.setVelocityX(0); });
+                monsters.children.iterate((m) => { if(m && m.body && !m.isStunned) m.body.setVelocityX(0); });
             } else if (secilenKarakter === "Masal") {
                 activeScene.showFloatingText("SÜZÜLME AKTİF! 🎈", 0xf1c40f);
                 activeScene.physics.world.gravity.y = 250; 
@@ -312,41 +314,43 @@
                 if (playerLives < 3) { playerLives++; h.destroy(); livesText.setText('❤️ Canlar: ' + '❤️'.repeat(playerLives)); self.showFloatingText("+1 CAN!", 0x2ecc71); }
             });
 
-            // GARANTİLİ CANAVAR ETKİLEŞİM KURALLARI
+            // 🎯 %100 BAĞIMSIZ HATA SIZ CANAVAR ETKİLEŞİM SİSTEMİ
             this.physics.add.overlap(player, monsters, (p, monster) => {
                 if (isAbilityActive && secilenKarakter === "Bartu") return;
 
-                // Oyuncunun dikey hızı pozitifse (aşağı düşüyorsa) veya canavarın üst hizasındaysa
-                let isOnTop = (p.body.velocity.y >= 0 && p.y < monster.y - 10);
+                // Oyuncunun dikey olarak canavarın üzerinde olup olmadığının kontrolü (Hassas mesafe testi)
+                let isOnTop = (p.body.velocity.y >= -50 && p.y < monster.y - 8);
 
-                if (monster.isStunned) {
-                    // Canavar baygınsa oyuncu ASLA yanmaz! Sadece üstüne basarsa yok olur.
-                    if (isOnTop || p.body.touching.down) {
+                if (isOnTop) {
+                    // Bu spesifik canavara kaçıncı kez basıldığını kontrol et
+                    if (monster.touchCount === 1) {
+                        // 2. TEMAS -> CANAVAR ÖLÜR
                         monster.destroy();
                         self.showFloatingText("YOK EDİLDİ! 💥", 0x2ecc71);
-                        p.body.setVelocityY(-250); // Tekrar sektir
+                        p.body.setVelocityY(-260); // Yukarı zıplat (hissiyat için)
+                        meryemJumpCount = 1;
+                    } else if (!monster.isStunned) {
+                        // 1. TEMAS -> CANAVAR DONAR / BAYILIR
+                        monster.isStunned = true;
+                        monster.touchCount = 1; // Bu canavar için sınır tıklandı olarak kaydedildi
+                        monster.setFillStyle(0x3498db); // Rengini maviye çevir
+                        
+                        if (monster.body) {
+                            monster.body.setVelocityX(0);
+                            monster.body.setVelocityY(0);
+                            // Fiziksel çarpışma kutusunu iyice küçültüp eziyoruz ki yanlardan hasar vermesin
+                            monster.body.setSize(14, 8);
+                        }
+                        
+                        self.showFloatingText("BAYILDI! 💤", 0xf1c40f);
+                        p.body.setVelocityY(-280); // İlk basışta yukarı güçlü zıplat
                         meryemJumpCount = 1;
                     }
-                    return; // Baygın canavarla başka etkileşime girme, yanmayı engelle
-                }
-
-                // Canavar normal durumdayken üstüne basma kontrolü
-                if (isOnTop) {
-                    monster.isStunned = true;
-                    monster.setFillStyle(0x3498db); // Mavi yap
-                    
-                    if (monster.body) {
-                        monster.body.setVelocityX(0);
-                        monster.body.setVelocityY(0);
-                        // Hata önleme: Çarpışma kutusunu biraz daraltıyoruz ki ikinci zıplamada kenardan çarpıp yakmasın
-                        monster.body.setSize(16, 12); 
-                    }
-                    
-                    self.showFloatingText("BAYILDI! 💤", 0xf1c40f);
-                    p.body.setVelocityY(-260); // Yukarı zıplat
-                    meryemJumpCount = 1;
                 } else {
-                    // Yanlardan veya alttan normal canavara çarpma
+                    // Yandan çarpışmalarda canavar baygınsa (isStunned) oyuncuya ASLA zarar veremez!
+                    if (monster.isStunned) return;
+
+                    // Canavar kırmızıysa ve yandan çarptıysa can eksilt
                     if (isInvulnerable) return;
 
                     if (playerLives > 1) {
@@ -373,8 +377,11 @@
         }
 
         function spawnMonster(scene, x, y) {
+            monsterCounter++;
             let m = scene.add.rectangle(x, y, 24, 24, 0xc0392b); 
+            m.canavarKimligi = monsterCounter; // Her canavarın kendine has kimliği var
             m.isStunned = false; 
+            m.touchCount = 0; // Dokunma sayısı sıfırlandı
             monsters.add(m);
             scene.physics.add.existing(m); 
             m.body.setCollideWorldBounds(true);
@@ -489,7 +496,7 @@
                     }
                 });
 
-                let headerMsg = (currentLevel === 3) ? 'FİNAL BOSS SAVAŞI! KALAN SÜRE: ' : 'BOSS SAVAŞI! KALAN SÜRE: ';
+                let headerMsg = (currentLevel === 3) ? 'FİNAL BOSS SAVA SAVAŞI! KALAN SÜRE: ' : 'BOSS SAVAŞI! KALAN SÜRE: ';
                 bossText.setText(headerMsg + bossTimer + 'sn').setColor("#f1c40f");
                 
                 bossTimerEvent = scene.time.addEvent({
