@@ -100,12 +100,12 @@
         <div class="signature-top">✨ Designed by DtBY ✨</div>
         <h2 style="margin-bottom: 20px; font-size: 26px; color: #6c5ce7; text-shadow: 1px 1px 0px white;">Süper Kahramanını Seç! 🚀</h2>
         
-        <button class="btn-char btn-beril" onclick="startGame('Beril')">🍭 Beril (9 Yaş) - Şeker Yağmuru (8sn)</button>
-        <button class="btn-char btn-aybars" onclick="startGame('Aybars')">🦘 Aybars (2 Yaş) - Mega Zıplama (Pasif)</button>
-        <button class="btn-char btn-neriman" onclick="startGame('Neriman')">❄️ Neriman (9 Yaş) - Canavarları Dondur (15sn)</button>
-        <button class="btn-char btn-meryem" onclick="startGame('Meryem')">🛡️ Meryem (9 Yaş) - Havada 2 Kez Zıplama (Sürekli)</button>
-        <button class="btn-char btn-masal" onclick="startGame('Masal')">🎈 Masal (5 Yaş) - Süzülerek Uçma (15sn)</button>
-        <button class="btn-char btn-bartu" onclick="startGame('Bartu')">👻 Bartu (9 Yaş) - Görünmezlik Gücü (10sn)</button>
+        <button class="btn-char btn-beril" onclick="startGame('Beril')">⚡ Beril (9 Yaş) - Şimşek Çocuk / Şeker Yağmuru</button>
+        <button class="btn-char btn-aybars" onclick="startGame('Aybars')">🍼 Aybars (2 Yaş) - Emekleyen Bebek / Mega Zıplama</button>
+        <button class="btn-char btn-neriman" onclick="startGame('Neriman')">❄️ Neriman (9 Yaş) - Buz Kraliçesi / Canavarları Dondur</button>
+        <button class="btn-char btn-meryem" onclick="startGame('Meryem')">🛡️ Meryem (9 Yaş) - Zırhlı Şövalye / Çift Zıplama</button>
+        <button class="btn-char btn-masal" onclick="startGame('Masal')">🎈 Masal (5 Yaş) - Balonlu Peri / Süzülerek Uçma</button>
+        <button class="btn-char btn-bartu" onclick="startGame('Bartu')">👻 Bartu (9 Yaş) - Casus Hayalet / Görünmezlik</button>
         
         <div style="margin-top:20px; font-size:12px; color:#636e72; font-weight: bold;">Bilal Yıldırım tarafından yapılmıştır. 🌟</div>
     </div>
@@ -189,18 +189,18 @@
             if (secilenKarakter === "Meryem") {
                 if (player.body.touching.down || player.body.blocked.down) {
                     meryemJumpCount = 1;
-                    player.body.setVelocityY(-380);
+                    player.body.setVelocityY(-360);
                 } else if (meryemJumpCount < 2) {
                     meryemJumpCount = 2;
-                    player.body.setVelocityY(-360);
+                    player.body.setVelocityY(-340);
                     gameInstance.scene.scenes[0].showFloatingText("ÇİFT ZIPLAMA! 🛡️", 0x3498db);
                 }
                 return;
             }
 
             if (player.body.touching.down || player.body.blocked.down) {
-                let gravityFactor = (isAbilityActive && secilenKarakter === "Masal") ? -220 : -380;
-                let ziplamaGucu = (secilenKarakter === "Aybars") ? -580 : gravityFactor;
+                let gravityFactor = (isAbilityActive && secilenKarakter === "Masal") ? -200 : -360;
+                let ziplamaGucu = (secilenKarakter === "Aybars") ? -540 : gravityFactor;
                 player.body.setVelocityY(ziplamaGucu);
             }
         }
@@ -221,7 +221,7 @@
                 monsters.children.iterate((m) => { 
                     if(m && m.body) {
                         m.isCandy = true;
-                        redrawMonsterGraphics(m); // Şekere dönüştürerek yeniden çiz
+                        redrawMonsterGraphics(m);
                     } 
                 });
             } else if (secilenKarakter === "Neriman") {
@@ -261,7 +261,7 @@
                 monsters.children.iterate((m) => { 
                     if(m && m.body) {
                         m.isCandy = false;
-                        redrawMonsterGraphics(m); // Canavara geri döndürerek yeniden çiz
+                        redrawMonsterGraphics(m);
                     } 
                 });
 
@@ -294,78 +294,136 @@
 
             let platformHeights = [370, 310, 250, 190, 130, 340, 220, 160];
             
-            if (currentLevel === 1) {
-                for (let i = 0; i < 45; i++) {
-                    let x = 200 + (i * 65); 
-                    let y = platformHeights[i % platformHeights.length];
-                    let w = Phaser.Math.Between(80, 130);
-                    let block = this.add.rectangle(x, y, w, 14, 0xe67e22);
-                    platforms.add(block);
-                }
-            } else if (currentLevel === 2) {
-                for (let i = 0; i < 45; i++) {
-                    let x = 200 + (i * 65); 
-                    let y = platformHeights[i % platformHeights.length];
-                    let w = Phaser.Math.Between(80, 120);
-                    let block = this.add.rectangle(x, y, w, 14, 0x3498db);
-                    platforms.add(block);
-                    
-                    let randomAngle = Phaser.Math.Between(-15, 15);
-                    block.setAngle(randomAngle);
-                    if(block.body) {
-                         block.body.setSize(w, 14);
-                    }
-                }
-            } else if (currentLevel === 3) {
-                for (let i = 0; i < 40; i++) {
-                    let x = 200 + (i * 70); 
-                    let y = platformHeights[i % platformHeights.length];
-                    let w = Phaser.Math.Between(85, 120);
-                    let block = this.add.rectangle(x, y, w, 14, 0x9b59b6);
-                    platforms.add(block);
-                    
+            // Platform genişlikleri dengelendi ve takılmayı önlemek için aralıklar açıldı
+            for (let i = 0; i < 45; i++) {
+                let x = 240 + (i * 75); 
+                let y = platformHeights[i % platformHeights.length];
+                let w = Phaser.Math.Between(70, 105);
+                let renk = (currentLevel === 1) ? 0xe67e22 : (currentLevel === 2 ? 0x3498db : 0x9b59b6);
+                let block = this.add.rectangle(x, y, w, 12, renk);
+                platforms.add(block);
+                
+                if (currentLevel === 2) {
+                    block.setAngle(Phaser.Math.Between(-8, 8));
+                    if(block.body) block.body.setSize(w, 12);
+                } else if (currentLevel === 3) {
                     if (i % 2 === 0) {
                         self.tweens.add({
-                            targets: block.body.velocity,
-                            y: 80, yoyo: true, repeat: -1, duration: Phaser.Math.Between(1500, 2500)
+                            targets: block.body.velocity, y: 60, yoyo: true, repeat: -1, duration: Phaser.Math.Between(1800, 2800)
                         });
                     } else {
                         self.tweens.add({
-                            targets: block.body.velocity,
-                            x: 60, yoyo: true, repeat: -1, duration: Phaser.Math.Between(1500, 3000)
+                            targets: block.body.velocity, x: 50, yoyo: true, repeat: -1, duration: Phaser.Math.Between(2000, 3200)
                         });
                     }
                 }
             }
 
-            // 🧒 KÜP YERİNE SEVİMLİ ÇOCUK KAHRAMAN ÇİZİMİ
+            // 👑 HER ÇOCUĞA ÖZEL KODLA KAHRAMAN ÇİZİMİ
             player = this.add.container(100, 350);
-            let pGraphics = this.add.graphics();
-            // Gövde (Giysi)
-            pGraphics.fillStyle(0x9b59b6, 1);
-            pGraphics.fillRoundedRect(-16, -10, 32, 35, 8);
-            // Kafa / Yüz
-            pGraphics.fillStyle(0xffdbac, 1);
-            pGraphics.fillCircle(0, -22, 14);
-            // Saçlar
-            pGraphics.fillStyle(0x4a2711, 1);
-            pGraphics.fillCircle(-6, -32, 7);
-            pGraphics.fillCircle(6, -32, 7);
-            pGraphics.fillCircle(0, -30, 10);
-            // Gözler
-            pGraphics.fillStyle(0x2c3e50, 1);
-            pGraphics.fillCircle(-5, -24, 2.5);
-            pGraphics.fillCircle(5, -24, 2.5);
-            // Gülümseme
-            pGraphics.lineStyle(2, 0xe74c3c, 1);
-            pGraphics.beginPath();
-            pGraphics.arc(0, -18, 4, 0, Math.PI, false);
-            pGraphics.strokePath();
+            let pG = this.add.graphics();
 
-            player.add(pGraphics);
+            if (secilenKarakter === "Aybars") {
+                // 🍼 Aybars: Emekleyen yeşil tulumlu sevimli bebek
+                pG.fillStyle(0x2ecc71, 1); // Yeşil Tulum Gövde
+                pG.fillRoundedRect(-18, 5, 34, 16, 6);
+                pG.fillStyle(0xffffff, 1); // Arkada Bebek Bezi Kabarıklığı
+                pG.fillCircle(-16, 8, 7);
+                pG.fillStyle(0xffdbac, 1); // Yüz (Öne doğru bakıyor)
+                pG.fillCircle(10, 2, 11);
+                pG.fillStyle(0x4a2711, 1); // Kafada tek tel komik saç
+                pG.fillRect(8, -12, 3, 4);
+                pG.fillStyle(0x2c3e50, 1); // Gözler
+                pG.fillCircle(13, 0, 2);
+            } 
+            else if (secilenKarakter === "Beril") {
+                // ⚡ Beril: Kırmızı pelerinli, şimşek amblemli Şimşek Çocuk
+                pG.fillStyle(0xe74c3c, 1); // Kırmızı Dalgalanan Pelerin
+                pG.fillTriangle(-14, 0, -22, 25, -5, 18);
+                pG.fillStyle(0xf1c40f, 1); // Parlak Sarı Kostüm
+                pG.fillRoundedRect(-12, -4, 24, 26, 5);
+                pG.fillStyle(0xffdbac, 1); // Yüz
+                pG.fillCircle(0, -14, 11);
+                pG.fillStyle(0xe67e22, 1); // Turuncu Havalı Saçlar
+                pG.fillTriangle(-12, -22, 0, -28, -4, -18);
+                pG.fillTriangle(0, -28, 12, -22, 4, -18);
+                pG.fillStyle(0xe74c3c, 1); // Göğüsteki Şimşek Amblemi
+                pG.fillTriangle(0, -1, -4, 6, 4, 6);
+                pG.fillStyle(0x2c3e50, 1); // Gözler
+                pG.fillCircle(-4, -14, 2); pG.fillCircle(4, -14, 2);
+            } 
+            else if (secilenKarakter === "Neriman") {
+                // ❄️ Neriman: Kar taneli sihirli elbiseli Buz Kraliçesi
+                pG.fillStyle(0x74b9ff, 1); // Kabarık Mavi Prenses Elbisesi
+                pG.fillTriangle(0, -5, -15, 24, 15, 24);
+                pG.fillStyle(0xffffff, 1); // Kar Tanesi Detayı
+                pG.fillCircle(0, 10, 3);
+                pG.fillStyle(0xffdbac, 1); // Yüz
+                pG.fillCircle(0, -14, 11);
+                pG.fillStyle(0xfdcb6e, 1); // Sarı Uzun Saçlar
+                pG.fillCircle(-10, -10, 6); pG.fillCircle(10, -10, 6); pG.fillRect(-12, -10, 24, 12);
+                pG.fillStyle(0xae2573, 1); // Sihirli Değnek
+                pG.fillRect(10, 0, 3, 20); pG.fillStyle(0xffff00, 1); pG.fillCircle(11, 0, 4);
+                pG.fillStyle(0x2c3e50, 1); // Gözler
+                pG.fillCircle(-3, -14, 2); pG.fillCircle(3, -14, 2);
+            } 
+            else if (secilenKarakter === "Meryem") {
+                // 🛡️ Meryem: Miğferli ve Kalkanlı Zırhlı Şövalye
+                pG.fillStyle(0x7f8c8d, 1); // Gri Çelik Gövde Zırhı
+                pG.fillRoundedRect(-12, -4, 24, 26, 6);
+                pG.fillStyle(0xbdc3c7, 1); // Sırtındaki Yuvarlak Koruma Kalkanı
+                pG.fillCircle(-13, 8, 9); pG.fillStyle(0xc0392b, 1); pG.fillCircle(-13, 8, 4);
+                pG.fillStyle(0xffdbac, 1); // Yüz
+                pG.fillCircle(0, -14, 11);
+                pG.fillStyle(0x95a5a6, 1); // Kafadaki Şövalye Miğferi
+                pG.arc(0, -15, 12, Math.PI, 0, false); pG.fill();
+                pG.fillStyle(0xd35400, 1); // Miğfer Tüyü
+                pG.fillTriangle(0, -27, -5, -34, 5, -34);
+                pG.fillStyle(0x2c3e50, 1); // Gözler
+                pG.fillCircle(-4, -12, 2); pG.fillCircle(4, -12, 2);
+            } 
+            else if (secilenKarakter === "Masal") {
+                // 🎈 Masal: Uçuşan kanatlı ve balonlu Peri Kızı
+                pG.fillStyle(0xff781f, 0.6); // Arka Şeffaf Peri Kanatları
+                pG.fillCircle(-14, 2, 8); pG.fillCircle(-14, 12, 6);
+                pG.fillStyle(0xff85a2, 1); // Pembe Cici Elbise
+                pG.fillRoundedRect(-11, -4, 22, 25, 8);
+                pG.fillStyle(0xffdbac, 1); // Yüz
+                pG.fillCircle(0, -14, 11);
+                pG.fillStyle(0x2c3e50, 1); // Siyah Tokalı Saçlar
+                pG.fillCircle(0, -16, 12); pG.fillStyle(0xff477e, 1); pG.fillCircle(8, -22, 4);
+                pG.fillStyle(0xe74c3c, 1); // Elindeki Uçan Kırmızı Balon
+                pG.fillRect(11, 5, 1, 15); pG.fillStyle(0xff477e, 1); pG.fillCircle(11, 2, 6);
+                pG.fillStyle(0x2c3e50, 1); // Gözler
+                pG.fillCircle(-4, -12, 2); pG.fillCircle(4, -12, 2);
+            } 
+            else if (secilenKarakter === "Bartu") {
+                // 👻 Bartu: Havalı mor kapüşonlu, gözleri parlayan Casus Hayalet
+                pG.fillStyle(0x6c5ce7, 1); // Gizemli Mor Pelerin/Gövde
+                pG.fillRoundedRect(-12, -4, 24, 26, 4);
+                pG.fillStyle(0xffdbac, 1); // Yüz bölgesi
+                pG.fillCircle(0, -14, 11);
+                pG.fillStyle(0x4a2711, 1); // Saç ucu
+                pG.fillRect(-5, -10, 10, 3);
+                pG.fillStyle(0x341f97, 1); // Kafayı Saran Büyük Kapüşon
+                pG.beginPath(); pG.arc(0, -14, 13, Math.PI, 0, false); pG.fill();
+                pG.fillStyle(0x00ff00, 1); // Karanlıkta Parlayan Neon Yeşil Gözler
+                pG.fillCircle(-4, -13, 2.5); pG.fillCircle(4, -13, 2.5);
+            }
+
+            // Sevimli Gülümseme Çizgisi (Tüm karakterlere ortak ağız)
+            if(secilenKarakter !== "Aybars" && secilenKarakter !== "Bartu") {
+                pG.lineStyle(2, 0xe74c3c, 1); pG.beginPath(); pG.arc(0, -9, 3, 0, Math.PI, false); pG.strokePath();
+            } else if (secilenKarakter === "Aybars") {
+                pG.lineStyle(1.5, 0xe74c3c, 1); pG.beginPath(); pG.arc(12, 4, 2, 0, Math.PI, false); pG.strokePath();
+            }
+
+            player.add(pG);
             this.physics.add.existing(player);
-            player.body.setSize(32, 55);
-            player.body.setOffset(-16, -35);
+            
+            // 🛠️ TAKILMA ÖNLEYİCİ FİZİK KUTUSU AYARLARI
+            player.body.setSize(24, 45);
+            player.body.setOffset(-12, -22);
             player.body.setCollideWorldBounds(true);
             this.cameras.main.startFollow(player, true, 0.1, 0.1); 
 
@@ -405,27 +463,25 @@
                     return;
                 }
 
-                let isOnTop = (p.body.velocity.y >= -50 && p.y < monster.y - 12);
+                let isOnTop = (p.body.velocity.y >= -50 && p.y < monster.y - 10);
 
                 if (isOnTop) {
                     if (monster.touchCount === 1) {
                         monster.destroy();
                         self.showFloatingText("YOK EDİLDİ! 💥", 0x2ecc71);
-                        p.body.setVelocityY(-260); 
+                        p.body.setVelocityY(-250); 
                         meryemJumpCount = 1;
                     } else if (!monster.isStunned) {
                         monster.isStunned = true;
                         monster.touchCount = 1; 
-                        redrawMonsterGraphics(monster); // Grafik durumunu baygın yap ve tekrar çiz
-                        
+                        redrawMonsterGraphics(monster); 
                         if (monster.body) {
                             monster.body.setVelocityX(0);
                             monster.body.setVelocityY(0);
                             monster.body.setSize(30, 12);
                         }
-                        
                         self.showFloatingText("BAYILDI! 💤", 0xf1c40f);
-                        p.body.setVelocityY(-280); 
+                        p.body.setVelocityY(-270); 
                         meryemJumpCount = 1;
                     }
                 } else {
@@ -455,45 +511,23 @@
             };
         }
 
-        // 👾 DİNAMİK CANAVAR GRAFİK ÇİZİCİ (Normal, Baygın ve Şeker Modları)
         function redrawMonsterGraphics(m) {
-            let g = m.first; // Container içindeki ilk grafik objesini al
+            let g = m.first; 
             g.clear();
 
             if (m.isCandy) {
-                // 🍭 ŞEKER MODU (Lolipop Çizimi)
-                g.fillStyle(0xffffff, 1);
-                g.fillRect(-2, 0, 4, 18); // Şeker sapı
-                g.fillStyle(0xff85a2, 1);
-                g.fillCircle(0, -6, 12); // Lolipop gövdesi
-                g.lineStyle(2, 0xff477e, 1);
-                g.beginPath(); g.arc(0, -6, 7, 0, Math.PI * 2); g.strokePath(); // İç sarmal halkası
+                g.fillStyle(0xffffff, 1); g.fillRect(-2, 0, 4, 18); 
+                g.fillStyle(0xff85a2, 1); g.fillCircle(0, -6, 12); 
+                g.lineStyle(2, 0xff477e, 1); g.beginPath(); g.arc(0, -6, 7, 0, Math.PI * 2); g.strokePath(); 
             } else if (m.isStunned) {
-                // 💤 BAYGIN MODU (Gözleri Kapalı Uyuyan Mavi Canavar)
-                g.fillStyle(0x3498db, 1);
-                g.fillRoundedRect(-14, -8, 28, 16, 6);
-                // Kapalı Gözler (Zz çizgileri gibi düz çizgi)
-                g.lineStyle(2, 0x2c3e50, 1);
-                g.lineBetween(-6, -2, -2, -2);
-                g.lineBetween(2, -2, 6, -2);
+                g.fillStyle(0x3498db, 1); g.fillRoundedRect(-14, -8, 28, 16, 6);
+                g.lineStyle(2, 0x2c3e50, 1); g.lineBetween(-6, -2, -2, -2); g.lineBetween(2, -2, 6, -2);
             } else {
-                // 👹 NORMAL CANAVAR MODU (Tek Gözlü Sevimli Kızgın Canavar)
-                g.fillStyle(0xc0392b, 1);
-                g.fillRoundedRect(-14, -14, 28, 28, 8); // Gövde
-                // Kocaman Tek Göz Beyazı
-                g.fillStyle(0xffffff, 1);
-                g.fillCircle(0, -2, 8);
-                // Göz Bebeği
-                g.fillStyle(0x2c3e50, 1);
-                g.fillCircle(0, -2, 3.5);
-                // Kızgın Kaşlar
-                g.lineStyle(2, 0x000000, 1);
-                g.lineBetween(-9, -10, -1, -7);
-                g.lineBetween(1, -7, 9, -10);
-                // Küçük Dişler
-                g.fillStyle(0xffffff, 1);
-                g.fillTriangle(-6, 8, -2, 8, -4, 12);
-                g.fillTriangle(2, 8, 6, 8, 4, 12);
+                g.fillStyle(0xc0392b, 1); g.fillRoundedRect(-14, -14, 28, 28, 8); 
+                g.fillStyle(0xffffff, 1); g.fillCircle(0, -2, 8);
+                g.fillStyle(0x2c3e50, 1); g.fillCircle(0, -2, 3.5);
+                g.lineStyle(2, 0x000000, 1); g.lineBetween(-9, -10, -1, -7); g.lineBetween(1, -7, 9, -10);
+                g.fillStyle(0xffffff, 1); g.fillTriangle(-6, 8, -2, 8, -4, 12); g.fillTriangle(2, 8, 6, 8, 4, 12);
             }
         }
 
@@ -503,22 +537,17 @@
             let mGraphics = scene.add.graphics();
             m.add(mGraphics);
 
-            m.canavarKimligi = monsterCounter; 
-            m.isStunned = false; 
-            m.touchCount = 0; 
-            m.isCandy = false; 
+            m.canavarKimligi = monsterCounter; m.isStunned = false; m.touchCount = 0; m.isCandy = false; 
 
-            redrawMonsterGraphics(m); // İlk çizim tetiklenir
-
+            redrawMonsterGraphics(m);
             monsters.add(m);
             scene.physics.add.existing(m); 
-            m.body.setSize(28, 28);
-            m.body.setOffset(-14, -14);
+            m.body.setSize(26, 26);
+            m.body.setOffset(-13, -13);
             m.body.setCollideWorldBounds(true);
             
             if (isAbilityActive && secilenKarakter === "Beril") {
-                m.isCandy = true;
-                redrawMonsterGraphics(m);
+                m.isCandy = true; redrawMonsterGraphics(m);
             }
         }
 
@@ -534,18 +563,10 @@
             scene.physics.pause();
             if(bossTimerEvent) bossTimerEvent.remove();
             if(specialAbilityTimerEvent) specialAbilityTimerEvent.remove();
-            
-            currentLevel++;
-            bossActive = false;
-            bossTimer = 30;
-
+            currentLevel++; bossActive = false; bossTimer = 30;
             let upperText = (currentLevel === 3) ? "FİNAL BÖLÜMÜNE GEÇİLİYOR!" : `BÖLÜM ${currentLevel}'YE GEÇİLİYOR!`;
             bossText.setText(upperText).setColor("#2ecc71");
-
-            scene.time.delayedCall(3000, () => {
-                bossText.setText('');
-                scene.scene.restart();
-            });
+            scene.time.delayedCall(3000, () => { bossText.setText(''); scene.scene.restart(); });
         }
 
         function gameOver(scene, message, title = "OYUN BİTTİ") {
@@ -559,7 +580,7 @@
         }
 
         function update() {
-            let hizAyari = (secilenKarakter === "Beril") ? 240 : 190;
+            let hizAyari = (secilenKarakter === "Beril") ? 230 : 185;
             if (player && player.body && !player.scene.physics.world.isPaused) {
                 player.body.setVelocityX(moveDir * hizAyari);
             }
@@ -567,21 +588,11 @@
             if (!bossActive && monsters && monsters.children && (!isAbilityActive || (secilenKarakter !== "Neriman" && secilenKarakter !== "Beril"))) {
                 monsters.children.iterate((m) => {
                     if (m && m.body && player) {
-                        if (m.isStunned) {
-                            m.body.setVelocityX(0);
-                            return;
-                        }
+                        if (m.isStunned) { m.body.setVelocityX(0); return; }
+                        m.body.setVelocityX(player.x > m.x ? 80 : -80);
 
-                        if (player.x > m.x) {
-                            m.body.setVelocityX(85);
-                        } else {
-                            m.body.setVelocityX(-85);
-                        }
-
-                        if (m.body.blocked.left || m.body.blocked.right || (player.y < m.y - 35 && Phaser.Math.Between(0, 100) > 95)) {
-                            if (m.body.blocked.down || m.body.touching.down) {
-                                m.body.setVelocityY(-340);
-                            }
+                        if (m.body.blocked.left || m.body.blocked.right || (player.y < m.y - 35 && Phaser.Math.Between(0, 100) > 96)) {
+                            if (m.body.blocked.down || m.body.touching.down) m.body.setVelocityY(-320);
                         }
                     }
                 });
@@ -590,42 +601,28 @@
             if (player.x > 2500 && !bossActive) {
                 bossActive = true;
                 let scene = player.scene;
-                
                 scene.cameras.main.stopFollow();
                 monsters.clear(true, true); 
 
                 let spawnCount = (currentLevel === 3) ? 2 : 1;
                 
                 for(let b=0; b < spawnCount; b++) {
-                    // 👿 KÜP YERİNE DEV BOSS (GÖLGE CANAVARI) ÇİZİMİ
                     let bossItem = scene.add.container(player.x + 200 + (b * 70), 150);
                     let bG = scene.add.graphics();
-                    // Dev Gövde
-                    bG.fillStyle(0x2c3e50, 1);
-                    bG.fillRoundedRect(-25, -35, 50, 70, 15);
-                    // Korkunç Parlayan Sarı Gözler
-                    bG.fillStyle(0xf1c40f, 1);
-                    bG.fillCircle(-10, -10, 6);
-                    bG.fillCircle(10, -10, 6);
-                    bG.fillStyle(0x000000, 1);
-                    bG.fillCircle(-10, -10, 2);
-                    bG.fillCircle(10, -10, 2);
-                    // Büyük Ağız ve Keskin Dişler
-                    bG.fillStyle(0xc0392b, 1);
-                    bG.fillRect(-15, 10, 30, 10);
+                    bG.fillStyle(0x2c3e50, 1); bG.fillRoundedRect(-25, -35, 50, 70, 15);
+                    bG.fillStyle(0xf1c40f, 1); bG.fillCircle(-10, -10, 6); bG.fillCircle(10, -10, 6);
+                    bG.fillStyle(0x000000, 1); bG.fillCircle(-10, -10, 2); bG.fillCircle(10, -10, 2);
+                    bG.fillStyle(0xc0392b, 1); bG.fillRect(-15, 10, 30, 10);
                     
-                    bossItem.add(bG);
-                    bosses.add(bossItem);
+                    bossItem.add(bG); bosses.add(bossItem);
                     scene.physics.add.existing(bossItem);
-                    bossItem.body.setSize(50, 70);
-                    bossItem.body.setOffset(-25, -35);
+                    bossItem.body.setSize(46, 66);
+                    bossItem.body.setOffset(-23, -33);
                     bossItem.body.setCollideWorldBounds(true);
                     bossItem.body.setBounce(0.3);
                     
                     scene.physics.add.overlap(player, bossItem, () => {
-                        if(!isInvulnerable) {
-                            gameOver(scene, "Bölüm sonu canavarına elendin!");
-                        }
+                        if(!isInvulnerable) gameOver(scene, "Bölüm sonu canavarına elendin!");
                     });
                 }
 
@@ -634,16 +631,9 @@
                     callback: () => {
                         bosses.children.iterate((bossItem) => {
                             if (bossItem && bossItem.body) {
-                                if (player.x > bossItem.x) {
-                                    bossItem.body.setVelocityX(145);
-                                } else {
-                                    bossItem.body.setVelocityX(-145);
-                                }
-
-                                if (bossItem.body.blocked.left || bossItem.body.blocked.right || (player.y < bossItem.y - 40 && Phaser.Math.Between(0,10) > 4)) {
-                                    if(bossItem.body.blocked.down || bossItem.body.touching.down) {
-                                        bossItem.body.setVelocityY(-350);
-                                    }
+                                bossItem.body.setVelocityX(player.x > bossItem.x ? 135 : -135);
+                                if (bossItem.body.blocked.left || bossItem.body.blocked.right || (player.y < bossItem.y - 40 && Phaser.Math.Between(0,10) > 5)) {
+                                    if(bossItem.body.blocked.down || bossItem.body.touching.down) bossItem.body.setVelocityY(-330);
                                 }
                             }
                         });
@@ -659,11 +649,8 @@
                         bossTimer--;
                         bossText.setText(headerMsg + bossTimer + 'sn');
                         if (bossTimer <= 0) {
-                            if (currentLevel < 3) {
-                                advanceLevel(scene);
-                            } else {
-                                gameOver(scene, "TÜM BÖLÜMLERİ GEÇTİN! MUHTEŞEM BİR ZAFER!", "TEBRİKLER!");
-                            }
+                            if (currentLevel < 3) advanceLevel(scene);
+                            else gameOver(scene, "TÜM BÖLÜMLERİ GEÇTİN! MUHTEŞEM BİR ZAFER!", "TEBRİKLER!");
                         }
                     }
                 });
