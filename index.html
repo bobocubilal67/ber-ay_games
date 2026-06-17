@@ -852,6 +852,24 @@
                 });
             }
         }
+        drawCuteCharacter
+        // --- MİNNOŞ KARAKTER ÇİZİM FONKSİYONU ---
+function drawCuteCharacter(scene, x, y, name) {
+    let container = scene.add.container(x, y);
+    let pG = scene.add.graphics();
+    pG.fillStyle(0xffffff, 1); pG.fillCircle(0, 0, 15); // Gövde
+    
+    if (name === "Beril") {
+        pG.fillStyle(0xff75a0, 1); pG.fillCircle(0, -5, 5);
+        pG.fillStyle(0x2d142c, 1); pG.fillCircle(-5, -2, 3); pG.fillCircle(5, -2, 3);
+    } else {
+        pG.fillStyle(0xffdbac, 1); pG.fillCircle(0, 0, 14);
+        pG.fillStyle(0x000000, 1); pG.fillCircle(-5, -2, 2); pG.fillCircle(5, -2, 2);
+    }
+    container.add(pG);
+    return container;
+}
+        
     </script>
 </body>
 </html>
