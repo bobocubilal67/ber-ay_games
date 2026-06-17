@@ -314,10 +314,14 @@
         function create() {
             let self = this;
             
-            // YENİ EKLENEN GÜVENLİK KİLİDİ: Her bölüm başladığında fizik motoru ve güçler sıfırlanır.
+            // ================== YENİ VE KESİN GÜVENLİK KİLİDİ ==================
+            // Her bölüm başladığında dünyayı, fizik motorunu ve TÜM değişkenleri ilk haline getiriyoruz.
+            this.physics.world.isPaused = false;
             this.physics.resume(); 
             isAbilityActive = false; 
             isInvulnerable = false;
+            bossActive = false;       // HATANIN ÇÖZÜM NOKTASI!
+            bossTimer = 30;           // HATANIN ÇÖZÜM NOKTASI!
             moveDir = 0;
             document.getElementById('btnAbility').style.opacity = "1";
             if (this.physics.world) { this.physics.world.gravity.y = 800; } // Süzülmeyi kapat
@@ -490,11 +494,13 @@
             scene.physics.pause(); 
             if(bossTimerEvent) bossTimerEvent.remove(); 
             if(specialAbilityTimerEvent) specialAbilityTimerEvent.remove();
-            if(abilityTimerEvent) abilityTimerEvent.remove(); // YENİ: Varsa önceki bölümden kalan gücün bitme sayacını kapat.
+            if(abilityTimerEvent) abilityTimerEvent.remove(); 
 
-            currentLevel++; bossActive = false; bossTimer = 30;
+            currentLevel++; 
             let upperText = (currentLevel === 3) ? "FİNAL BÖLÜMÜNE GEÇİLİYOR!" : `BÖLÜM ${currentLevel}'YE GEÇİLİYOR!`;
             bossText.setText(upperText).setColor("#fff");
+            
+            // 3 saniye bekle ve bölümü yeniden başlat
             scene.time.delayedCall(3000, () => { bossText.setText(''); scene.scene.restart(); });
         }
 
@@ -507,8 +513,12 @@
         }
 
         function update() {
+            // ================== YENİ GÜVENLİK KİLİDİ 2 ==================
+            // Eğer bölüm duraklatılmışsa (diğer bölüme geçiliyorsa) BURADAKİ HİÇBİR ŞEYİ ÇALIŞTIRMA!
+            if (!player || !player.body || player.scene.physics.world.isPaused) return;
+
             let hizAyari = (secilenKarakter === "Beril") ? 230 : 185;
-            if (player && player.body && !player.scene.physics.world.isPaused) { player.body.setVelocityX(moveDir * hizAyari); }
+            player.body.setVelocityX(moveDir * hizAyari);
 
             if (!bossActive && monsters && monsters.children && (!isAbilityActive || (secilenKarakter !== "Neriman" && secilenKarakter !== "Beril"))) {
                 monsters.children.iterate((m) => {
