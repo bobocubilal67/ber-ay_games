@@ -80,7 +80,7 @@
             border: 4px dashed #ff7675;
             backdrop-filter: blur(10px);
             position: relative;
-            z-index: 10; /* Arka plan süslerinin üstünde kalması için */
+            z-index: 10;
         }
 
         /* ================= KUTU İÇİ FESTİVAL ALANI ================= */
@@ -233,7 +233,6 @@
 </head>
 <body>
 
-    <!-- ================= ARKA PLAN SÜSLERİ (MAVİ ALANI DOLDURANLAR) ================= -->
     <div class="bg-decor cloud c1"></div>
     <div class="bg-decor cloud c2"></div>
     <div class="bg-decor cloud c3"></div>
@@ -258,12 +257,10 @@
     <div class="bg-decor bg-candy bc3"></div>
     <div class="bg-decor bg-candy bc4"></div>
 
-    <!-- ================= ANA SEÇİM KUTUSU ================= -->
     <div id="char-selection">
         <div class="signature-top">✨ Designed by DtBY ✨</div>
         <h2 style="margin-bottom: 10px; font-size: 24px; color: #6c5ce7; text-shadow: 1px 1px 0px white;">Süper Kahramanını Seç! 🚀</h2>
         
-        <!-- 🎪 KUTU İÇİ PANORAMİK FESTİVAL AFİŞİ -->
         <div class="festival-banner">
             <div class="lighthouse"></div>
             <div class="lighthouse-top"></div>
@@ -304,7 +301,6 @@
         <div style="margin-top:15px; font-size:12px; color:#636e72; font-weight: bold;">Bilal Yıldırım tarafından yapılmıştır. 🌟</div>
     </div>
 
-    <!-- ================= OYUN ALANI ================= -->
     <div id="game-wrapper">
         <div id="game-over-screen">
             <h2 id="end-title">OYUN BİTTİ</h2>
@@ -340,49 +336,44 @@
         let currentLevel = 1;
         let monsterCounter = 0; 
 
-         function startGame(karakterIsmi, resetLevel = true) {
-    if (resetLevel) {
-        currentLevel = 1; // Yeni oyunsa 1. bölümden başla
-    }
-    
-    secilenKarakter = karakterIsmi;
-    playerLives = 1; 
-    isInvulnerable = false;
-    isAbilityActive = false;
-    bossActive = false;
-    bossTimer = 30;
-    moveDir = 0;
-    meryemJumpCount = 0;
-    monsterCounter = 0;
+        function startGame(karakterIsmi, resetLevel = true) {
+            if (resetLevel) {
+                currentLevel = 1;
+            }
+            
+            secilenKarakter = karakterIsmi;
+            playerLives = 1; 
+            isInvulnerable = false;
+            isAbilityActive = false;
+            bossActive = false;
+            bossTimer = 30;
+            moveDir = 0;
+            meryemJumpCount = 0;
+            monsterCounter = 0;
 
-    document.getElementById('char-selection').style.display = 'none';
-    document.getElementById('game-wrapper').style.display = 'block';
-    document.getElementById('game-over-screen').style.display = 'none';
+            document.getElementById('char-selection').style.display = 'none';
+            document.getElementById('game-wrapper').style.display = 'block';
+            document.getElementById('game-over-screen').style.display = 'none';
 
-    // Karakter yetenek butonları
-    const abBtn = document.getElementById('btnAbility');
-    if(secilenKarakter !== "Aybars" && secilenKarakter !== "Meryem") {
-        abBtn.style.display = "flex"; 
-    } else {
-        abBtn.style.display = "none";
-    }
+            const abBtn = document.getElementById('btnAbility');
+            if(secilenKarakter !== "Aybars" && secilenKarakter !== "Meryem") {
+                abBtn.style.display = "flex"; 
+            } else {
+                abBtn.style.display = "none";
+            }
 
-    setupMobileControls();
+            setupMobileControls();
 
-    if (gameInstance) gameInstance.destroy(true);
-    gameInstance = new Phaser.Game(config);
-}
+            if (gameInstance) gameInstance.destroy(true);
+            gameInstance = new Phaser.Game(config);
+        }
 
         function restartGameInstance() {
-    let savedLevel = currentLevel; // O anki bölümü hafızaya al
-    closeGameInstance(); // Oyunu temizle
-    
-    // startGame'i 'false' parametresiyle çağırarak bölümün sıfırlanmamasını sağla
-    startGame(secilenKarakter, false);
-    
-    // Oyun yeniden kurulduktan sonra sakladığımız bölümü geri yükle
-    currentLevel = savedLevel;
-}
+            let savedLevel = currentLevel; 
+            closeGameInstance(); 
+            startGame(secilenKarakter, false);
+            currentLevel = savedLevel;
+        }
 
         function closeGameInstance() {
             if (gameInstance) { gameInstance.destroy(true); gameInstance = null; }
@@ -549,70 +540,79 @@
                 }
             }
 
+            // ================= MİNNOŞ (CHIBI STYLE) KARAKTER ÇIZIM ALANI =================
             player = this.add.container(100, 350);
             let pG = this.add.graphics();
 
             if (secilenKarakter === "Beril") {
-                pG.fillStyle(0x2d142c, 1); pG.fillRoundedRect(-13, -2, 26, 24, 6);
-                pG.fillStyle(0xff75a0, 1); pG.fillCircle(-8, 0, 3); pG.fillCircle(0, 2, 3); pG.fillCircle(8, 0, 3);
-                pG.fillStyle(0xffffff, 1); pG.fillCircle(0, -14, 12);
-                pG.fillStyle(0x1a051d, 1); pG.beginPath(); pG.arc(0, -14, 12.5, Math.PI, 0, false); pG.fill();
-                pG.fillTriangle(-12, -20, -18, -35, -4, -24); pG.fillTriangle(12, -20, 18, -35, 4, -24);   
-                pG.fillStyle(0xff75a0, 1); pG.fillCircle(-18, -35, 3.5); pG.fillCircle(18, -35, 3.5);
-                pG.fillStyle(0xff75a0, 1); pG.fillCircle(0, -22, 3.5); pG.fillRect(-2, -19, 4, 3);    
-                pG.fillStyle(0x2d142c, 1); pG.fillTriangle(-7, -15, -3, -13, -4, -17); pG.fillTriangle(7, -15, 3, -13, 4, -17);   
-                pG.fillStyle(0xffb3c6, 0.7); pG.fillCircle(-8, -10, 2.5); pG.fillCircle(8, -10, 2.5);
-                pG.fillStyle(0xff75a0, 1); pG.fillCircle(0, -11, 1);
+                // Kuromi Tarzı Minnoş Beril
+                pG.fillStyle(0xffffff, 1); pG.fillCircle(0, 0, 14); 
+                pG.fillStyle(0x2d142c, 1); 
+                pG.fillTriangle(-14, -8, -18, -25, -4, -12); 
+                pG.fillTriangle(14, -8, 18, -25, 4, -12);
+                pG.arc(0, 0, 14, Math.PI, 0, false); pG.fill();
+                pG.fillStyle(0xff75a0, 1); pG.fillCircle(-18, -25, 3.5); pG.fillCircle(18, -25, 3.5);
+                pG.fillCircle(0, -8, 3.5); 
+                pG.fillStyle(0xffb3c6, 0.7); pG.fillCircle(-8, 3, 3); pG.fillCircle(8, 3, 3); 
+                pG.fillStyle(0x2d142c, 1); pG.fillCircle(-6, -2, 3); pG.fillCircle(6, -2, 3); 
+                pG.fillStyle(0xffffff, 1); pG.fillCircle(-6.5, -3, 1); pG.fillCircle(5.5, -3, 1); 
+                pG.fillStyle(0xff75a0, 1); pG.fillCircle(0, 2, 1.5); 
             } 
             else if (secilenKarakter === "Aybars") {
-                pG.fillStyle(0x74b9ff, 1); pG.fillCircle(0, -26, 4); pG.fillRoundedRect(-10, -23, 20, 12, 4);
-                pG.fillStyle(0xffdbac, 1); pG.fillCircle(0, -10, 10);
-                pG.fillStyle(0xff7675, 0.6); pG.fillCircle(-6, -8, 2.5); pG.fillCircle(6, -8, 2.5);
-                pG.fillStyle(0x2c3e50, 1); pG.fillCircle(-4, -11, 2.5); pG.fillCircle(4, -11, 2.5);
-                pG.fillStyle(0xffffff, 1); pG.fillCircle(-4.5, -12, 0.8); pG.fillCircle(3.5, -12, 0.8);
-                pG.fillStyle(0xffffff, 1); pG.fillRoundedRect(-8, 0, 16, 12, 3);
-                pG.fillStyle(0xff7675, 1); pG.fillRoundedRect(-8, 8, 16, 8, 2);
-                pG.fillStyle(0xffdbac, 1); pG.fillRect(-6, 16, 4, 4); pG.fillRect(2, 16, 4, 4);
-                pG.fillStyle(0xffffff, 1); pG.fillCircle(-4, 20, 3); pG.fillCircle(4, 20, 3);
+                // Tombul Kapüşonlu Ufaklık Aybars
+                pG.fillStyle(0xffdbac, 1); pG.fillCircle(0, 0, 14); 
+                pG.fillStyle(0x74b9ff, 1); pG.arc(0, -2, 14.5, Math.PI, 0, false); pG.fill(); 
+                pG.fillCircle(0, -16, 4); 
+                pG.fillStyle(0xff7675, 0.7); pG.fillCircle(-8, 3, 3.5); pG.fillCircle(8, 3, 3.5); 
+                pG.fillStyle(0x2c3e50, 1); pG.fillCircle(-5, -1, 3); pG.fillCircle(5, -1, 3);
+                pG.fillStyle(0xffffff, 1); pG.fillCircle(-5.5, -2, 1); pG.fillCircle(4.5, -2, 1);
+                pG.fillStyle(0xffffff, 1); pG.fillCircle(0, 5, 3.5);
+                pG.fillStyle(0xff7675, 1); pG.fillCircle(0, 5, 2);
             } 
             else if (secilenKarakter === "Neriman") {
-                pG.fillStyle(0x74b9ff, 1); pG.fillTriangle(0, -5, -15, 24, 15, 24);
-                pG.fillStyle(0xffffff, 1); pG.fillCircle(0, 10, 3);
-                pG.fillStyle(0xffdbac, 1); pG.fillCircle(0, -14, 11);
-                pG.fillStyle(0xfdcb6e, 1); pG.fillCircle(-10, -10, 6); pG.fillCircle(10, -10, 6); pG.fillRect(-12, -10, 24, 12);
-                pG.fillStyle(0xae2573, 1); pG.fillRect(10, 0, 3, 20); pG.fillStyle(0xffff00, 1); pG.fillCircle(11, 0, 4);
-                pG.fillStyle(0x2c3e50, 1); pG.fillCircle(-3, -14, 2); pG.fillCircle(3, -14, 2);
+                // Sevimli Taçlı Buz Kraliçesi Neriman
+                pG.fillStyle(0xffdbac, 1); pG.fillCircle(0, 0, 14); 
+                pG.fillStyle(0x74b9ff, 1); pG.fillRect(-10, 10, 20, 12); 
+                pG.fillStyle(0xfdcb6e, 1); 
+                pG.fillCircle(-11, -2, 5); pG.fillCircle(11, -2, 5); pG.fillRect(-12, -12, 24, 8);
+                pG.fillStyle(0xf1c40f, 1); pG.fillTriangle(-6, -12, 0, -19, 6, -12); 
+                pG.fillStyle(0xff7675, 0.6); pG.fillCircle(-7, 3, 3); pG.fillCircle(7, 3, 3);
+                pG.fillStyle(0x2c3e50, 1); pG.fillCircle(-5, -1, 2.5); pG.fillCircle(5, -1, 2.5);
+                pG.fillStyle(0xffffff, 1); pG.fillCircle(-5.5, -1.5, 0.8); pG.fillCircle(4.5, -1.5, 0.8);
             } 
             else if (secilenKarakter === "Meryem") {
-                pG.fillStyle(0x7f8c8d, 1); pG.fillRoundedRect(-12, -4, 24, 26, 6);
-                pG.fillStyle(0xbdc3c7, 1); pG.fillCircle(-13, 8, 9); pG.fillStyle(0xc0392b, 1); pG.fillCircle(-13, 8, 4);
-                pG.fillStyle(0xffdbac, 1); pG.fillCircle(0, -14, 11);
-                pG.fillStyle(0x95a5a6, 1); pG.arc(0, -15, 12, Math.PI, 0, false); pG.fill();
-                pG.fillStyle(0xd35400, 1); pG.fillTriangle(0, -27, -5, -34, 5, -34);
-                pG.fillStyle(0x2c3e50, 1); pG.fillCircle(-4, -12, 2); pG.fillCircle(4, -12, 2);
+                // Ponponlu Şövalye Meryem
+                pG.fillStyle(0xffdbac, 1); pG.fillCircle(0, 0, 13); 
+                pG.fillStyle(0x7f8c8d, 1); pG.arc(0, -2, 14, Math.PI, 0, false); pG.fill(); 
+                pG.fillStyle(0x95a5a6, 1); pG.fillRect(-14, 2, 4, 10); pG.fillRect(10, 2, 4, 10); 
+                pG.fillStyle(0xe74c3c, 1); pG.fillCircle(0, -17, 4.5); 
+                pG.fillStyle(0xff7675, 0.6); pG.fillCircle(-6, 3, 2.5); pG.fillCircle(6, 3, 2.5);
+                pG.fillStyle(0x2c3e50, 1); pG.fillCircle(-4, -1, 2.5); pG.fillCircle(4, -1, 2.5);
+                pG.fillStyle(0xffffff, 1); pG.fillCircle(-4.5, -1.5, 0.8); pG.fillCircle(3.5, -1.5, 0.8);
             } 
             else if (secilenKarakter === "Masal") {
-                pG.fillStyle(0xff781f, 0.6); pG.fillCircle(-14, 2, 8); pG.fillCircle(-14, 12, 6);
-                pG.fillStyle(0xff85a2, 1); pG.fillRoundedRect(-11, -4, 22, 25, 8);
-                pG.fillStyle(0xffdbac, 1); pG.fillCircle(0, -14, 11);
-                pG.fillStyle(0x2c3e50, 1); pG.fillCircle(0, -16, 12); pG.fillStyle(0xff477e, 1); pG.fillCircle(8, -22, 4);
-                pG.fillStyle(0xe74c3c, 1); pG.fillRect(11, 5, 1, 15); pG.fillStyle(0xff477e, 1); pG.fillCircle(11, 2, 6);
-                pG.fillStyle(0x2c3e50, 1); pG.fillCircle(-4, -12, 2); pG.fillCircle(4, -12, 2);
+                // Kanatlı Balon Perisi Masal
+                pG.fillStyle(0xffdbac, 1); pG.fillCircle(0, 0, 13); 
+                pG.fillStyle(0xff85a2, 0.5); pG.fillCircle(-15, 0, 5); pG.fillCircle(15, 0, 5); 
+                pG.fillStyle(0xff781f, 1); pG.fillCircle(-10, -5, 5); pG.fillCircle(10, -5, 5); pG.fillRect(-11, -12, 22, 8); 
+                pG.fillStyle(0xff477e, 1); pG.fillCircle(0, -14, 3); 
+                pG.fillStyle(0xff7675, 0.6); pG.fillCircle(-6, 3, 3); pG.fillCircle(6, 3, 3);
+                pG.fillStyle(0x2c3e50, 1); pG.fillCircle(-4, -1, 2.5); pG.fillCircle(4, -1, 2.5);
+                pG.fillStyle(0xffffff, 1); pG.fillCircle(-4.5, -1.5, 0.8); pG.fillCircle(3.5, -1.5, 0.8);
             } 
             else if (secilenKarakter === "Bartu") {
-                pG.fillStyle(0x6c5ce7, 1); pG.fillRoundedRect(-12, -4, 24, 26, 4);
-                pG.fillStyle(0xffdbac, 1); pG.fillCircle(0, -14, 11);
-                pG.fillStyle(0x4a2711, 1); pG.fillRect(-5, -10, 10, 3);
-                pG.fillStyle(0x341f97, 1); pG.beginPath(); pG.arc(0, -14, 13, Math.PI, 0, false); pG.fill();
-                pG.fillStyle(0x00ff00, 1); pG.fillCircle(-4, -13, 2.5); pG.fillCircle(4, -13, 2.5);
+                // Utangaç Maskeli Casus Bartu
+                pG.fillStyle(0xffdbac, 1); pG.fillCircle(0, 0, 13); 
+                pG.fillStyle(0x6c5ce7, 1); pG.arc(0, -1, 14, Math.PI, 0, false); pG.fill(); 
+                pG.fillRect(-14, 0, 28, 10);
+                pG.fillStyle(0x00ff00, 1); pG.fillCircle(-5, -1, 3); pG.fillCircle(5, -1, 3); 
+                pG.fillStyle(0xffffff, 1); pG.fillCircle(-5.5, -2, 0.8); pG.fillCircle(4.5, -2, 0.8);
+                pG.fillStyle(0xff7675, 0.4); pG.fillCircle(-5, 4, 2); pG.fillCircle(5, 4, 2); 
             }
 
-            if(secilenKarakter === "Beril") {
-                pG.lineStyle(1.5, 0x2d142c, 1); pG.beginPath(); pG.arc(0, -8, 2, 0, Math.PI, false); pG.strokePath();
-            } else if(secilenKarakter !== "Aybars" && secilenKarakter !== "Bartu") {
-                pG.lineStyle(2, 0xe74c3c, 1); pG.beginPath(); pG.arc(0, -9, 3, 0, Math.PI, false); pG.strokePath();
-            } else if (secilenKarakter === "Aybars") {
-                pG.lineStyle(1.5, 0xe74c3c, 1); pG.beginPath(); pG.arc(0, -6, 2, 0, Math.PI, false); pG.strokePath();
+            // Ortak Minnoş Gülümseme Çizgisi
+            if(secilenKarakter !== "Aybars") {
+                pG.lineStyle(1.5, 0xe74c3c, 1); pG.beginPath(); pG.arc(0, 3, 2.5, 0, Math.PI, false); pG.strokePath();
             }
 
             player.add(pG);
@@ -852,24 +852,6 @@
                 });
             }
         }
-        drawCuteCharacter
-        // --- MİNNOŞ KARAKTER ÇİZİM FONKSİYONU ---
-function drawCuteCharacter(scene, x, y, name) {
-    let container = scene.add.container(x, y);
-    let pG = scene.add.graphics();
-    pG.fillStyle(0xffffff, 1); pG.fillCircle(0, 0, 15); // Gövde
-    
-    if (name === "Beril") {
-        pG.fillStyle(0xff75a0, 1); pG.fillCircle(0, -5, 5);
-        pG.fillStyle(0x2d142c, 1); pG.fillCircle(-5, -2, 3); pG.fillCircle(5, -2, 3);
-    } else {
-        pG.fillStyle(0xffdbac, 1); pG.fillCircle(0, 0, 14);
-        pG.fillStyle(0x000000, 1); pG.fillCircle(-5, -2, 2); pG.fillCircle(5, -2, 2);
-    }
-    container.add(pG);
-    return container;
-}
-        
     </script>
 </body>
 </html>
