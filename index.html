@@ -20,29 +20,22 @@
 
         /* ================= MAVİ ALANI DOLDURAN ARKA PLAN SÜSLERİ ================= */
         .bg-decor { position: absolute; pointer-events: none; z-index: 1; }
-        
-        /* Bulutlar */
         .cloud { background: #fff; border-radius: 20px; opacity: 0.85; filter: blur(1px); }
         .cloud::before, .cloud::after { content: ''; position: absolute; background: #fff; border-radius: 50%; }
         
         .c1 { width: 80px; height: 30px; top: 10%; left: 8%; }
         .c1::before { width: 40px; height: 40px; top: -20px; left: 15px; }
         .c1::after { width: 30px; height: 30px; top: -15px; left: 45px; }
-
         .c2 { width: 100px; height: 35px; top: 25%; right: 7%; }
         .c2::before { width: 50px; height: 50px; top: -25px; left: 20px; }
         .c2::after { width: 40px; height: 40px; top: -15px; left: 50px; }
-
         .c3 { width: 70px; height: 25px; bottom: 15%; left: 10%; opacity: 0.7; }
         .c3::before { width: 30px; height: 30px; top: -15px; left: 12px; }
-
         .c4 { width: 90px; height: 30px; bottom: 20%; right: 12%; opacity: 0.7; }
         .c4::before { width: 45px; height: 45px; top: -20px; left: 20px; }
 
-        /* Uçan Balonlar */
         .balloon { width: 30px; height: 36px; border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%; position: absolute; }
         .balloon::after { content: ''; position: absolute; bottom: -8px; left: 14px; width: 2px; height: 10px; background: #95a5a6; }
-        
         .b1 { background: #ff7675; top: 15%; left: 25%; transform: rotate(-10deg); }
         .b2 { background: #74b9ff; top: 40%; left: 6%; transform: rotate(15deg); width: 25px; height: 30px; }
         .b3 { background: #ffeaa7; top: 18%; right: 28%; transform: rotate(5deg); }
@@ -50,7 +43,6 @@
         .b5 { background: #55efc4; bottom: 10%; left: 28%; transform: rotate(8deg); }
         .b6 { background: #ff85a2; bottom: 12%; right: 30%; transform: rotate(-5deg); }
 
-        /* Parlayan Yıldızlar */
         .star { background: #fff; width: 12px; height: 12px; clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%); opacity: 0.9; animation: pulse 2s infinite alternate; }
         .s1 { top: 5%; left: 50%; width: 16px; height: 16px; }
         .s2 { top: 32%; left: 15%; }
@@ -59,7 +51,6 @@
         .s5 { bottom: 28%; left: 20%; }
         .s6 { bottom: 5%; right: 45%; }
 
-        /* Havada Uçuşan Küçük Yuvarlak Şekerler */
         .bg-candy { width: 14px; height: 14px; border-radius: 50%; opacity: 0.8; }
         .bc1 { background: #fd79a8; top: 22%; left: 18%; }
         .bc2 { background: #ffeaa7; top: 65%; left: 14%; }
@@ -70,94 +61,40 @@
 
         /* ================= ANA SEÇİM KUTUSU ================= */
         #char-selection { 
-            text-align: center; 
-            padding: 20px; 
-            max-width: 480px; 
-            width: 92%; 
-            background: rgba(255, 255, 255, 0.97);
-            border-radius: 24px;
-            box-shadow: 0 20px 45px rgba(0,0,0,0.2);
-            border: 4px dashed #ff7675;
-            backdrop-filter: blur(10px);
-            position: relative;
-            z-index: 10;
+            text-align: center; padding: 20px; max-width: 480px; width: 92%; 
+            background: rgba(255, 255, 255, 0.97); border-radius: 24px;
+            box-shadow: 0 20px 45px rgba(0,0,0,0.2); border: 4px dashed #ff7675;
+            backdrop-filter: blur(10px); position: relative; z-index: 10;
         }
 
-        /* ================= KUTU İÇİ FESTİVAL ALANI ================= */
         .festival-banner {
-            position: relative;
-            width: 100%;
-            height: 120px;
+            position: relative; width: 100%; height: 120px;
             background: linear-gradient(to bottom, #e0f7fa 0%, #fff 100%);
-            border-radius: 16px;
-            margin-top: 10px;
-            margin-bottom: 15px;
-            overflow: hidden;
-            border: 2px solid #b38bff;
+            border-radius: 16px; margin-top: 10px; margin-bottom: 15px;
+            overflow: hidden; border: 2px solid #b38bff;
         }
-
-        /* Deniz Feneri */
         .lighthouse {
             position: absolute; left: 15px; bottom: 0; width: 25px; height: 100px;
             background: linear-gradient(to bottom, #fff 0%, #fff 20%, #e74c3c 20%, #e74c3c 40%, #fff 40%, #fff 60%, #e74c3c 60%, #e74c3c 80%, #fff 80%);
             clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%);
         }
-        .lighthouse-top {
-            position: absolute; left: 17px; bottom: 98px; width: 21px; height: 15px;
-            background: #34495e; border-radius: 4px 4px 0 0;
-        }
-        .lighthouse-glow {
-            position: absolute; left: -5px; bottom: 102px; width: 40px; height: 8px;
-            background: radial-gradient(circle, rgba(255,255,170,0.8) 0%, rgba(255,255,170,0) 70%);
-            filter: blur(1px);
-        }
-
-        /* Büyük Şemsiye */
-        .umbrella {
-            position: absolute; left: 60px; bottom: 0; width: 70px; height: 85px;
-        }
-        .umbrella-stick {
-            position: absolute; left: 33px; bottom: 0; width: 4px; height: 60px; background: #7f8c8d;
-        }
-        .umbrella-top {
-            position: absolute; left: 0; bottom: 50px; width: 70px; height: 35px;
-            background: repeating-linear-gradient(90deg, #e74c3c, #e74c3c 10px, #fff 10px, #fff 20px);
-            border-radius: 70px 70px 5px 5px;
-        }
-
-        /* Yılbaşı Ağacı */
-        .christmastree {
-            position: absolute; right: 15px; bottom: 0; width: 75px; height: 110px;
-        }
-        .tree-trunk {
-            position: absolute; left: 32px; bottom: 0; width: 10px; height: 15px; background: #784212;
-        }
+        .lighthouse-top { position: absolute; left: 17px; bottom: 98px; width: 21px; height: 15px; background: #34495e; border-radius: 4px 4px 0 0; }
+        .lighthouse-glow { position: absolute; left: -5px; bottom: 102px; width: 40px; height: 8px; background: radial-gradient(circle, rgba(255,255,170,0.8) 0%, rgba(255,255,170,0) 70%); filter: blur(1px); }
+        .umbrella { position: absolute; left: 60px; bottom: 0; width: 70px; height: 85px; }
+        .umbrella-stick { position: absolute; left: 33px; bottom: 0; width: 4px; height: 60px; background: #7f8c8d; }
+        .umbrella-top { position: absolute; left: 0; bottom: 50px; width: 70px; height: 35px; background: repeating-linear-gradient(90deg, #e74c3c, #e74c3c 10px, #fff 10px, #fff 20px); border-radius: 70px 70px 5px 5px; }
+        .christmastree { position: absolute; right: 15px; bottom: 0; width: 75px; height: 110px; }
+        .tree-trunk { position: absolute; left: 32px; bottom: 0; width: 10px; height: 15px; background: #784212; }
         .tree-l1 { position: absolute; left: 5px; bottom: 12px; width: 65px; height: 40px; background: #1e8449; clip-path: polygon(50% 0%, 0% 100%, 100% 100%); }
         .tree-l2 { position: absolute; left: 12px; bottom: 40px; width: 50px; height: 35px; background: #239b56; clip-path: polygon(50% 0%, 0% 100%, 100% 100%); }
         .tree-l3 { position: absolute; left: 20px; bottom: 65px; width: 35px; height: 30px; background: #28b463; clip-path: polygon(50% 0%, 0% 100%, 100% 100%); }
-        .tree-star {
-            position: absolute; left: 31px; bottom: 93px; width: 12px; height: 12px; background: #f1c40f;
-            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
-        }
-
-        /* Şekerler */
-        .candy1 {
-            position: absolute; left: 150px; top: 20px; width: 25px; height: 25px;
-            background: radial-gradient(circle, #ff75a0 0%, #ff477e 40%, #fff 40%, #fff 60%, #ff477e 60%); border-radius: 50%;
-        }
+        .tree-star { position: absolute; left: 31px; bottom: 93px; width: 12px; height: 12px; background: #f1c40f; clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%); }
+        .candy1 { position: absolute; left: 150px; top: 20px; width: 25px; height: 25px; background: radial-gradient(circle, #ff75a0 0%, #ff477e 40%, #fff 40%, #fff 60%, #ff477e 60%); border-radius: 50%; }
         .candy1::after { content: ''; position: absolute; left: 11px; top: 24px; width: 2px; height: 15px; background: #aaa; }
-
-        .candy2 {
-            position: absolute; right: 110px; top: 30px; width: 20px; height: 20px;
-            background: repeating-conic-gradient(#f1c40f 0% 25%, #e67e22 25% 50%); border-radius: 50%;
-        }
+        .candy2 { position: absolute; right: 110px; top: 30px; width: 20px; height: 20px; background: repeating-conic-gradient(#f1c40f 0% 25%, #e67e22 25% 50%); border-radius: 50%; }
         .candy2::after { content: ''; position: absolute; left: 9px; top: 19px; width: 2px; height: 12px; background: #aaa; }
-
-        /* Süper Kahramanlar Toplu Çizim Alanı */
-        .heroes-line {
-            position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
-            display: flex; gap: 8px; align-items: flex-end;
-        }
+        
+        .heroes-line { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; align-items: flex-end; }
         .mini-hero { width: 18px; height: 26px; position: relative; }
         .mh-beril { background: #2d142c; border-radius: 4px 4px 0 0; border-top: 5px solid #ff75a0; }
         .mh-aybars { background: #fff; border-radius: 50% 50% 0 0; border-top: 6px solid #74b9ff; height: 22px; border-bottom: 4px solid #ff7675; }
@@ -165,24 +102,11 @@
         .mh-meryem { background: #7f8c8d; border-radius: 4px 4px 0 0; border-top: 5px solid #bdc3c7; }
         .mh-masal { background: #ff85a2; border-radius: 6px 6px 0 0; border-top: 4px solid #2c3e50; }
         .mh-bartu { background: #6c5ce7; border-radius: 4px 4px 0 0; opacity: 0.8; border-top: 5px solid #341f97; }
-        
-        .btn-char {
-            color: #2c3e50; 
-            padding: 13px 15px; 
-            margin: 8px 0; 
-            font-size: 15px; 
-            font-weight: bold;
-            cursor: pointer; 
-            border-radius: 16px; 
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            transition: all 0.2s ease;
-            text-shadow: 1px 1px 0px rgba(255,255,255,0.5);
-        }
 
+        .btn-char {
+            color: #2c3e50; padding: 13px 15px; margin: 8px 0; font-size: 15px; font-weight: bold;
+            cursor: pointer; border-radius: 16px; width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.2s ease; text-shadow: 1px 1px 0px rgba(255,255,255,0.5);
+        }
         .btn-beril { background: #efe5ff; border: 3px solid #b38bff; box-shadow: 0 5px 0 #9b62ff; color: #4a154b; }
         .btn-aybars { background: #fab1a0; border: 3px solid #ff7675; box-shadow: 0 5px 0 #e17055; }
         .btn-neriman { background: #dfe6e9; border: 3px solid #b2bec3; box-shadow: 0 5px 0 #636e72; }
@@ -194,31 +118,22 @@
         #game-container { width: 100%; height: 70%; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
         
         .mobile-controls {
-            width: 100%; height: 30%; background: #ff7675;
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 15px 20px; position: relative; border-top: 4px solid #fff;
+            width: 100%; height: 30%; background: #ff7675; display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; position: relative; border-top: 4px solid #fff;
         }
         .nav-buttons { display: flex; gap: 15px; }
         .action-buttons { display: flex; gap: 15px; }
-        
-        .ctrl-btn {
-            width: 70px; height: 70px; background: #ffeaa7; border: 3px solid #fdcb6e; border-radius: 50%;
-            color: #2c3e50; font-size: 28px; font-weight: bold; box-shadow: 0 6px 0 #f1c40f;
-            display: flex; align-items: center; justify-content: center;
-        }
+        .ctrl-btn { width: 70px; height: 70px; background: #ffeaa7; border: 3px solid #fdcb6e; border-radius: 50%; color: #2c3e50; font-size: 28px; font-weight: bold; box-shadow: 0 6px 0 #f1c40f; display: flex; align-items: center; justify-content: center; }
         .ctrl-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #f1c40f; }
         .jump-btn { background: #55efc4; border-color: #00b894; box-shadow: 0 6px 0 #00b894; }
         .jump-btn:active { box-shadow: 0 2px 0 #00b894; }
         .ability-btn { background: #a29bfe; border-color: #6c5ce7; color: white; font-size: 32px; box-shadow: 0 6px 0 #6c5ce7; display: none; }
-
         .signature-top { font-size: 18px; color: #ff477e; margin-bottom: 5px; font-weight: bold; letter-spacing: 1px; }
         .footer-credits { position: absolute; bottom: 3px; width: 100%; text-align: center; font-size: 11px; color: rgba(255,255,255,0.8); font-weight: bold; pointer-events: none; left: 0; }
 
         #game-over-screen {
             display: none; position: absolute; top: 10%; left: 50%; transform: translate(-50%, 0);
             background: rgba(255, 255, 255, 0.95); border: 4px solid #ff7675; border-radius: 20px;
-            padding: 25px; text-align: center; z-index: 1000; width: 85%; max-width: 350px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            padding: 25px; text-align: center; z-index: 1000; width: 85%; max-width: 350px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
         #game-over-screen h2 { color: #ff7675; margin-top: 0; font-size: 26px; }
         .popup-btn { width: 100%; padding: 12px; margin: 8px 0; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; }
@@ -227,62 +142,23 @@
     </style>
 </head>
 <body>
-
-    <div class="bg-decor cloud c1"></div>
-    <div class="bg-decor cloud c2"></div>
-    <div class="bg-decor cloud c3"></div>
-    <div class="bg-decor cloud c4"></div>
-
-    <div class="bg-decor balloon b1"></div>
-    <div class="bg-decor balloon b2"></div>
-    <div class="bg-decor balloon b3"></div>
-    <div class="bg-decor balloon b4"></div>
-    <div class="bg-decor balloon b5"></div>
-    <div class="bg-decor balloon b6"></div>
-
-    <div class="bg-decor star s1"></div>
-    <div class="bg-decor star s2"></div>
-    <div class="bg-decor star s3"></div>
-    <div class="bg-decor star s4"></div>
-    <div class="bg-decor star s5"></div>
-    <div class="bg-decor star s6"></div>
-
-    <div class="bg-decor bg-candy bc1"></div>
-    <div class="bg-decor bg-candy bc2"></div>
-    <div class="bg-decor bg-candy bc3"></div>
-    <div class="bg-decor bg-candy bc4"></div>
+    <div class="bg-decor cloud c1"></div><div class="bg-decor cloud c2"></div><div class="bg-decor cloud c3"></div><div class="bg-decor cloud c4"></div>
+    <div class="bg-decor balloon b1"></div><div class="bg-decor balloon b2"></div><div class="bg-decor balloon b3"></div><div class="bg-decor balloon b4"></div><div class="bg-decor balloon b5"></div><div class="bg-decor balloon b6"></div>
+    <div class="bg-decor star s1"></div><div class="bg-decor star s2"></div><div class="bg-decor star s3"></div><div class="bg-decor star s4"></div><div class="bg-decor star s5"></div><div class="bg-decor star s6"></div>
+    <div class="bg-decor bg-candy bc1"></div><div class="bg-decor bg-candy bc2"></div><div class="bg-decor bg-candy bc3"></div><div class="bg-decor bg-candy bc4"></div>
 
     <div id="char-selection">
         <div class="signature-top">✨ Designed by DtBY ✨</div>
         <h2 style="margin-bottom: 10px; font-size: 24px; color: #6c5ce7; text-shadow: 1px 1px 0px white;">Süper Kahramanını Seç! 🚀</h2>
         
         <div class="festival-banner">
-            <div class="lighthouse"></div>
-            <div class="lighthouse-top"></div>
-            <div class="lighthouse-glow"></div>
-            <div class="umbrella">
-                <div class="umbrella-stick"></div>
-                <div class="umbrella-top"></div>
-            </div>
-            
-            <div class="candy1"></div>
-            <div class="candy2"></div>
-            
-            <div class="christmastree">
-                <div class="tree-trunk"></div>
-                <div class="tree-l1"></div>
-                <div class="tree-l2"></div>
-                <div class="tree-l3"></div>
-                <div class="tree-star"></div>
-            </div>
-
+            <div class="lighthouse"></div><div class="lighthouse-top"></div><div class="lighthouse-glow"></div>
+            <div class="umbrella"><div class="umbrella-stick"></div><div class="umbrella-top"></div></div>
+            <div class="candy1"></div><div class="candy2"></div>
+            <div class="christmastree"><div class="tree-trunk"></div><div class="tree-l1"></div><div class="tree-l2"></div><div class="tree-l3"></div><div class="tree-star"></div></div>
             <div class="heroes-line">
-                <div class="mini-hero mh-beril"></div>
-                <div class="mini-hero mh-aybars"></div>
-                <div class="mini-hero mh-neriman"></div>
-                <div class="mini-hero mh-meryem"></div>
-                <div class="mini-hero mh-masal"></div>
-                <div class="mini-hero mh-bartu"></div>
+                <div class="mini-hero mh-beril"></div><div class="mini-hero mh-aybars"></div><div class="mini-hero mh-neriman"></div>
+                <div class="mini-hero mh-meryem"></div><div class="mini-hero mh-masal"></div><div class="mini-hero mh-bartu"></div>
             </div>
         </div>
 
@@ -323,16 +199,11 @@
         let playerLives = 1; let isInvulnerable = false; let isAbilityActive = false;
         let abilityTimerEvent = null; let bossActive = false; let bossTimer = 30; let bossTimerEvent = null;
         
-        let meryemJumpCount = 0;
-        let specialAbilityTimer = 0;
-        let specialAbilityTimerEvent = null;
-        
-        let currentLevel = 1;
-        let monsterCounter = 0; 
+        let meryemJumpCount = 0; let specialAbilityTimer = 0; let specialAbilityTimerEvent = null;
+        let currentLevel = 1; let monsterCounter = 0; 
 
         function startGame(karakterIsmi, resetLevel = true) {
             if (resetLevel) { currentLevel = 1; }
-            
             secilenKarakter = karakterIsmi;
             playerLives = 1; isInvulnerable = false; isAbilityActive = false;
             bossActive = false; bossTimer = 30; moveDir = 0; meryemJumpCount = 0; monsterCounter = 0;
@@ -442,6 +313,15 @@
 
         function create() {
             let self = this;
+            
+            // YENİ EKLENEN GÜVENLİK KİLİDİ: Her bölüm başladığında fizik motoru ve güçler sıfırlanır.
+            this.physics.resume(); 
+            isAbilityActive = false; 
+            isInvulnerable = false;
+            moveDir = 0;
+            document.getElementById('btnAbility').style.opacity = "1";
+            if (this.physics.world) { this.physics.world.gravity.y = 800; } // Süzülmeyi kapat
+
             this.physics.world.setBounds(0, 0, 3200, 450); 
             this.cameras.main.setBounds(0, 0, 3200, 450);
 
@@ -454,8 +334,7 @@
             }
 
             platforms = this.physics.add.group({ allowGravity: false, immovable: true });
-            let ground = this.add.rectangle(1600, 435, 3200, 30, 0x2ecc71);
-            platforms.add(ground);
+            let ground = this.add.rectangle(1600, 435, 3200, 30, 0x2ecc71); platforms.add(ground);
 
             let platformHeights = [370, 310, 250, 190, 130, 340, 220, 160];
             for (let i = 0; i < 45; i++) {
@@ -469,77 +348,63 @@
                 }
             }
 
-            // ================= TAM GÖVDELİ VE MİNNOŞ KAHRAMAN ÇİZİMLERİ =================
             player = this.add.container(100, 350);
             let pG = this.add.graphics();
 
             if (secilenKarakter === "Beril") {
-                // Kuromi Beril: Gövde/Elbise + Kafa + Kulaklar + Ayaklar
-                pG.fillStyle(0x2d142c, 1); pG.fillRect(-8, 2, 16, 14); // Elbise
-                pG.fillStyle(0xffffff, 1); pG.fillCircle(0, -10, 12); // Yüz
-                pG.fillStyle(0x2d142c, 1); 
-                pG.fillTriangle(-12, -16, -16, -30, -4, -18); pG.fillTriangle(12, -16, 18, -30, 4, -18); // Kulaklar
-                pG.arc(0, -10, 12, Math.PI, 0, false); pG.fill();
-                pG.fillStyle(0xff75a0, 1); pG.fillCircle(-16, -30, 3); pG.fillCircle(18, -30, 3); pG.fillCircle(0, -16, 3); // Ponponlar
-                pG.fillStyle(0xffb3c6, 0.7); pG.fillCircle(-7, -7, 2.5); pG.fillCircle(7, -7, 2.5); // Allıklar
-                pG.fillStyle(0x2d142c, 1); pG.fillCircle(-5, -11, 2.5); pG.fillCircle(5, -11, 2.5); // Gözler
-                pG.fillStyle(0xffffff, 1); pG.fillCircle(-5.5, -12, 0.8); pG.fillCircle(4.5, -12, 0.8); // Göz parlaması
-                pG.fillStyle(0xff75a0, 1); pG.fillCircle(0, -8, 1.5); // Burun
-                pG.fillStyle(0x2d142c, 1); pG.fillCircle(-4, 17, 3); pG.fillCircle(4, 17, 3); // Ayaklar
+                pG.fillStyle(0x2d142c, 1); pG.fillRect(-8, 2, 16, 14); 
+                pG.fillStyle(0xffffff, 1); pG.fillCircle(0, -10, 12); 
+                pG.fillStyle(0x2d142c, 1); pG.fillTriangle(-12, -16, -16, -30, -4, -18); pG.fillTriangle(12, -16, 18, -30, 4, -18); pG.arc(0, -10, 12, Math.PI, 0, false); pG.fill();
+                pG.fillStyle(0xff75a0, 1); pG.fillCircle(-16, -30, 3); pG.fillCircle(18, -30, 3); pG.fillCircle(0, -16, 3); 
+                pG.fillStyle(0xffb3c6, 0.7); pG.fillCircle(-7, -7, 2.5); pG.fillCircle(7, -7, 2.5); 
+                pG.fillStyle(0x2d142c, 1); pG.fillCircle(-5, -11, 2.5); pG.fillCircle(5, -11, 2.5); 
+                pG.fillStyle(0xffffff, 1); pG.fillCircle(-5.5, -12, 0.8); pG.fillCircle(4.5, -12, 0.8); 
+                pG.fillStyle(0xff75a0, 1); pG.fillCircle(0, -8, 1.5); 
+                pG.fillStyle(0x2d142c, 1); pG.fillCircle(-4, 17, 3); pG.fillCircle(4, 17, 3); 
             } 
             else if (secilenKarakter === "Aybars") {
-                // Tombul Aybars: Mavi Tulum + Kafa + Kapüşon + Ayaklar
-                pG.fillStyle(0x74b9ff, 1); pG.fillRoundedRect(-9, 2, 18, 14, 4); // Tulum Gövde
-                pG.fillStyle(0xffdbac, 1); pG.fillCircle(0, -10, 12); // Yüz
-                pG.fillStyle(0x74b9ff, 1); pG.arc(0, -12, 12.5, Math.PI, 0, false); pG.fill(); // Kapüşon Üstü
-                pG.fillCircle(0, -25, 3.5); // Şapka Ponponu
-                pG.fillStyle(0xff7675, 0.7); pG.fillCircle(-7, -7, 3); pG.fillCircle(7, -7, 3); // Yanaklar
-                pG.fillStyle(0x2c3e50, 1); pG.fillCircle(-4, -10, 2.5); pG.fillCircle(4, -10, 2.5); // Gözler
+                pG.fillStyle(0x74b9ff, 1); pG.fillRoundedRect(-9, 2, 18, 14, 4); 
+                pG.fillStyle(0xffdbac, 1); pG.fillCircle(0, -10, 12); 
+                pG.fillStyle(0x74b9ff, 1); pG.arc(0, -12, 12.5, Math.PI, 0, false); pG.fill(); pG.fillCircle(0, -25, 3.5); 
+                pG.fillStyle(0xff7675, 0.7); pG.fillCircle(-7, -7, 3); pG.fillCircle(7, -7, 3); 
+                pG.fillStyle(0x2c3e50, 1); pG.fillCircle(-4, -10, 2.5); pG.fillCircle(4, -10, 2.5); 
                 pG.fillStyle(0xffffff, 1); pG.fillCircle(-4.5, -11, 0.8); pG.fillCircle(3.5, -11, 0.8);
-                pG.fillStyle(0xffffff, 1); pG.fillCircle(0, -5, 3); pG.fillStyle(0xff7675, 1); pG.fillCircle(0, -5, 1.5); // Emzik
-                pG.fillStyle(0xffffff, 1); pG.fillCircle(-4, 17, 3); pG.fillCircle(4, 17, 3); // Beyaz Patikler
+                pG.fillStyle(0xffffff, 1); pG.fillCircle(0, -5, 3); pG.fillStyle(0xff7675, 1); pG.fillCircle(0, -5, 1.5); 
+                pG.fillStyle(0xffffff, 1); pG.fillCircle(-4, 17, 3); pG.fillCircle(4, 17, 3); 
             } 
             else if (secilenKarakter === "Neriman") {
-                // Prenses Neriman: Kabarık Elbise + Kafa + Saçlar + Altın Taç
-                pG.fillStyle(0x74b9ff, 1); pG.fillTriangle(-11, 16, 11, 16, 0, 2); pG.fillRect(-7, 2, 14, 12); // Mavi Elbise
-                pG.fillStyle(0xffdbac, 1); pG.fillCircle(0, -10, 11); // Yüz
-                pG.fillStyle(0xfdcb6e, 1); pG.fillCircle(-9, -11, 4); pG.fillCircle(9, -11, 4); pG.fillRect(-10, -21, 20, 6); // Sarı Saçlar
-                pG.fillStyle(0xf1c40f, 1); pG.fillTriangle(-5, -21, 0, -27, 5, -21); // Altın Taç
+                pG.fillStyle(0x74b9ff, 1); pG.fillTriangle(-11, 16, 11, 16, 0, 2); pG.fillRect(-7, 2, 14, 12); 
+                pG.fillStyle(0xffdbac, 1); pG.fillCircle(0, -10, 11); 
+                pG.fillStyle(0xfdcb6e, 1); pG.fillCircle(-9, -11, 4); pG.fillCircle(9, -11, 4); pG.fillRect(-10, -21, 20, 6); 
+                pG.fillStyle(0xf1c40f, 1); pG.fillTriangle(-5, -21, 0, -27, 5, -21); 
                 pG.fillStyle(0xff7675, 0.6); pG.fillCircle(-6, -7, 2.5); pG.fillCircle(6, -7, 2.5);
                 pG.fillStyle(0x2c3e50, 1); pG.fillCircle(-4, -10, 2); pG.fillCircle(4, -10, 2);
-                pG.fillStyle(0x74b9ff, 1); pG.fillCircle(-4, 17, 2.5); pG.fillCircle(4, 17, 2.5); // Ayakkabılar
+                pG.fillStyle(0x74b9ff, 1); pG.fillCircle(-4, 17, 2.5); pG.fillCircle(4, 17, 2.5); 
             } 
             else if (secilenKarakter === "Meryem") {
-                // Şövalye Meryem: Çelik Zırh + Kafa + Miğfer + Kırmızı Tüy + Ayaklar
-                pG.fillStyle(0x95a5a6, 1); pG.fillRect(-8, 2, 16, 13); pG.fillStyle(0x7f8c8d, 1); pG.fillRect(-5, 4, 10, 9); // Zırh Gövde
-                pG.fillStyle(0xffdbac, 1); pG.fillCircle(0, -10, 11); // Yüz
-                pG.fillStyle(0x7f8c8d, 1); pG.arc(0, -11, 11.5, Math.PI, 0, false); pG.fill(); // Kask
-                pG.fillStyle(0xe74c3c, 1); pG.fillCircle(0, -23, 4); // Miğfer tüyü
+                pG.fillStyle(0x95a5a6, 1); pG.fillRect(-8, 2, 16, 13); pG.fillStyle(0x7f8c8d, 1); pG.fillRect(-5, 4, 10, 9); 
+                pG.fillStyle(0xffdbac, 1); pG.fillCircle(0, -10, 11); 
+                pG.fillStyle(0x7f8c8d, 1); pG.arc(0, -11, 11.5, Math.PI, 0, false); pG.fill(); 
+                pG.fillStyle(0xe74c3c, 1); pG.fillCircle(0, -23, 4); 
                 pG.fillStyle(0xff7675, 0.6); pG.fillCircle(-5, -7, 2); pG.fillCircle(5, -7, 2);
                 pG.fillStyle(0x2c3e50, 1); pG.fillCircle(-3, -10, 2); pG.fillCircle(3, -10, 2);
-                pG.fillStyle(0x7f8c8d, 1); pG.fillCircle(-4, 16, 3); pG.fillCircle(4, 16, 3); // Demir Botlar
+                pG.fillStyle(0x7f8c8d, 1); pG.fillCircle(-4, 16, 3); pG.fillCircle(4, 16, 3); 
             } 
             else if (secilenKarakter === "Masal") {
-                // Peri Masal: Kanatlar + Pembe Elbise + Saçlar + Ayaklar
-                pG.fillStyle(0xffffff, 0.6); pG.fillCircle(-12, 4, 6); pG.fillCircle(12, 4, 6); // Arka Kanatlar
-                pG.fillStyle(0xff85a2, 1); pG.fillRect(-7, 2, 14, 13); pG.fillStyle(0xff477e, 1); pG.fillTriangle(-9, 15, 9, 15, 0, 2); // Elbise
-                pG.fillStyle(0xffdbac, 1); pG.fillCircle(0, -10, 11); // Yüz
-                pG.fillStyle(0xff781f, 1); pG.fillCircle(-9, -12, 4); pG.fillCircle(9, -12, 4); pG.fillRect(-9, -20, 18, 6); // Turuncu Saç
+                pG.fillStyle(0xffffff, 0.6); pG.fillCircle(-12, 4, 6); pG.fillCircle(12, 4, 6); 
+                pG.fillStyle(0xff85a2, 1); pG.fillRect(-7, 2, 14, 13); pG.fillStyle(0xff477e, 1); pG.fillTriangle(-9, 15, 9, 15, 0, 2); 
+                pG.fillStyle(0xffdbac, 1); pG.fillCircle(0, -10, 11); 
+                pG.fillStyle(0xff781f, 1); pG.fillCircle(-9, -12, 4); pG.fillCircle(9, -12, 4); pG.fillRect(-9, -20, 18, 6); 
                 pG.fillStyle(0xff7675, 0.6); pG.fillCircle(-5, -7, 2.5); pG.fillCircle(5, -7, 2.5);
                 pG.fillStyle(0x2c3e50, 1); pG.fillCircle(-3, -10, 2); pG.fillCircle(3, -10, 2);
                 pG.fillStyle(0xff85a2, 1); pG.fillCircle(-4, 16, 2.5); pG.fillCircle(4, 16, 2.5);
             }
 
-            // Ağız Çizgisi
             if(secilenKarakter !== "Aybars") { pG.lineStyle(1.5, 0xe74c3c, 1); pG.beginPath(); pG.arc(0, -6, 2.5, 0, Math.PI, false); pG.strokePath(); }
 
             player.add(pG);
             this.physics.add.existing(player);
-            
-            // Fizik kutusu tam gövdeye göre oturtuldu
-            player.body.setSize(24, 40);
-            player.body.setOffset(-12, -22);
-            player.body.setCollideWorldBounds(true);
+            player.body.setSize(24, 40); player.body.setOffset(-12, -22); player.body.setCollideWorldBounds(true);
             this.cameras.main.startFollow(player, true, 0.1, 0.1); 
 
             monsters = this.physics.add.group();
@@ -558,10 +423,7 @@
             });
 
             bosses = this.physics.add.group({ allowGravity: true });
-
-            this.physics.add.collider(player, platforms);
-            this.physics.add.collider(monsters, platforms);
-            this.physics.add.collider(bosses, platforms);
+            this.physics.add.collider(player, platforms); this.physics.add.collider(monsters, platforms); this.physics.add.collider(bosses, platforms);
 
             this.physics.add.overlap(player, hearts, (p, h) => {
                 if (playerLives < 3) { playerLives++; h.destroy(); livesText.setText('❤️ Canlar: ' + '❤️'.repeat(playerLives)); self.showFloatingText("+1 CAN!", 0x2ecc71); }
@@ -570,7 +432,6 @@
             this.physics.add.overlap(player, monsters, (p, monster) => {
                 if (monster.isCandy) { monster.destroy(); self.showFloatingText("ŞEKER KAPALDI! 🍬", 0xff477e); return; }
                 let isOnTop = (p.body.velocity.y >= -50 && p.y < monster.y - 12);
-
                 if (isOnTop) {
                     if (monster.touchCount === 1) { monster.destroy(); self.showFloatingText("YOK EDİLDİ! 💥", 0x2ecc71); p.body.setVelocityY(-250); meryemJumpCount = 1; } 
                     else if (!monster.isStunned) {
@@ -579,8 +440,7 @@
                         self.showFloatingText("BAYILDI! 💤", 0xf1c40f); p.body.setVelocityY(-270); meryemJumpCount = 1;
                     }
                 } else {
-                    if (monster.isStunned) return;
-                    if (isInvulnerable) return;
+                    if (monster.isStunned) return; if (isInvulnerable) return;
                     if (playerLives > 1) { playerLives--; livesText.setText('❤️ Canlar: ' + '❤️'.repeat(playerLives)); triggerInvulnerability(self); } 
                     else { gameOver(self, "Canavara yakalandın ve hiç kalbin kalmadı!"); }
                 }
@@ -589,7 +449,6 @@
             let levelLabel = (currentLevel === 3) ? "3 (FİNAL)" : currentLevel;
             infoText = this.add.text(15, 15, 'Kahraman: ' + secilenKarakter + ' | Bölüm: ' + levelLabel, { fontSize: '15px', color: '#2c3e50', fontWeight: 'bold' }).setScrollFactor(0).setDepth(100);
             livesText = this.add.text(15, 40, '❤️ Canlar: ❤️', { fontSize: '15px', color: '#e74c3c', fontWeight: 'bold' }).setScrollFactor(0).setDepth(100);
-            
             abilityText = this.add.text(400, 25, '', { fontSize: '18px', color: '#fff', fontWeight: 'bold', backgroundColor: '#6c5ce7', padding: 5 }).setOrigin(0.5).setScrollFactor(0).setDepth(102);
             bossText = this.add.text(400, 60, '', { fontSize: '20px', color: '#fff', fontWeight: 'bold', backgroundColor: '#e74c3c', padding: 5 }).setOrigin(0.5).setScrollFactor(0).setDepth(101);
 
@@ -628,7 +487,11 @@
         }
 
         function advanceLevel(scene) {
-            scene.physics.pause(); if(bossTimerEvent) bossTimerEvent.remove(); if(specialAbilityTimerEvent) specialAbilityTimerEvent.remove();
+            scene.physics.pause(); 
+            if(bossTimerEvent) bossTimerEvent.remove(); 
+            if(specialAbilityTimerEvent) specialAbilityTimerEvent.remove();
+            if(abilityTimerEvent) abilityTimerEvent.remove(); // YENİ: Varsa önceki bölümden kalan gücün bitme sayacını kapat.
+
             currentLevel++; bossActive = false; bossTimer = 30;
             let upperText = (currentLevel === 3) ? "FİNAL BÖLÜMÜNE GEÇİLİYOR!" : `BÖLÜM ${currentLevel}'YE GEÇİLİYOR!`;
             bossText.setText(upperText).setColor("#fff");
